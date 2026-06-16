@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to StudySphere{% endblock %}
+{% block content %}
+    <div class="text-center">
+        <h1 class="text-4xl font-bold mb-4">Welcome to StudySphere</h1>
+        <p class="text-lg text-gray-400 mb-8">Your collaborative learning platform.</p>
+        <div>
+            <a href="{% url 'login' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg mr-4">Login</a>
+            <a href="{% url 'register' %}" class="bg-green-500 text-white px-6 py-3 rounded-lg">Register</a>
+        </div>
+    </div>
+{% endblock %}

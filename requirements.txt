@@ -1,0 +1,7 @@
+Django~=4.2
+channels
+channels-redis
+django-redis
+python-dotenv
+gunicorn
+Pillow

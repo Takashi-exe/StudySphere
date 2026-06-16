@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+    <div class="text-center">
+        <h1 class="text-2xl font-bold mb-4">Welcome, {{ user.username }}!</h1>
+        <p>This is your dashboard. You can see your recent activity, friend requests, and more here.</p>
+    </div>
+{% endblock %}

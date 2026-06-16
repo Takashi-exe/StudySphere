@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Conversations{% endblock %}
+{% block content %}
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Your Conversations</h1>
+        <a href="{% url 'friends_list' %}" class="bg-blue-500 text-white px-4 py-2 rounded">New Conversation</a>
+    </div>
+    {% if conversations %}
+        <ul>
+            {% for conversation in conversations %}
+                <li class="mb-2">
+                    <a href="{% url 'conversation_detail' conversation_id=conversation.id %}" class="text-blue-500">
+                        {% for user in conversation.participants.all %}
+                            {% if user != request.user %}
+                                {{ user.username }}
+                            {% endif %}
+                        {% endfor %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no conversations.</p>
+    {% endif %}
+{% endblock %}

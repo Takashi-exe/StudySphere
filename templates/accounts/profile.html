@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <div class="flex items-center">
+            <img src="{% if profile_user.profile.avatar %}{{ profile_user.profile.avatar.url }}{% else %}/static/default_avatar.png{% endif %}" alt="Avatar" class="w-24 h-24 rounded-full mr-4">
+            <div>
+                <h2 class="text-2xl font-bold">{{ profile_user.username }}</h2>
+                <p class="text-gray-400">{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+                <p>{{ profile_user.profile.bio }}</p>
+                <p><a href="{{ profile_user.profile.github_url }}" class="text-blue-500">{{ profile_user.profile.github_url }}</a></p>
+            </div>
+        </div>
+        {% if user == profile_user %}
+            <a href="{% url 'edit_profile' %}" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">Edit Profile</a>
+        {% else %}
+            {% if profile_user in user.profile.friends.all %}
+                <a href="{% url 'unfriend_user' username=profile_user.username %}" class="bg-red-500 text-white px-4 py-2 rounded mt-4">Unfriend</a>
+                <a href="{% url 'start_conversation' username=profile_user.username %}" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Message</a>
+            {% elif friend_request_status == 'pending' %}
+                <p class="text-yellow-500 mt-4">Friend request sent</p>
+            {% elif friend_request_status == 'accepted' %}
+                 <a href="{% url 'unfriend_user' username=profile_user.username %}" class="bg-red-500 text-white px-4 py-2 rounded mt-4">Unfriend</a>
+                <a href="{% url 'start_conversation' username=profile_user.username %}" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Message</a>
+            {% elif friend_request_status == 'declined' %}
+                <p class="text-red-500 mt-4">Friend request declined</p>
+            {% else %}
+                <a href="{% url 'send_friend_request' to_user_username=profile_user.username %}" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Add Friend</a>
+            {% endif %}
+            <a href="{% url 'block_user' username=profile_user.username %}" class="bg-gray-500 text-white px-4 py-2 rounded mt-4">Block</a>
+        {% endif %}
+    </div>
+{% endblock %}
