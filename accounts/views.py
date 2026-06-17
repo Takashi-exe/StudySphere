@@ -7,13 +7,17 @@ from .models import Profile, FriendRequest
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
+from friends.models import Friendship
+from groups.models import StudyGroup
 
 def root_view(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
             return render(request, 'admin_dashboard.html')
         else:
-            return render(request, 'dashboard.html')
+            friends = request.user.profile.friends.all()
+            groups = request.user.study_groups.all()
+            return render(request, 'dashboard.html', {'friends': friends, 'groups': groups})
     else:
         return render(request, 'landing.html')
 
@@ -113,6 +117,8 @@ def accept_friend_request(request, from_user_username):
     friend_request.save()
     request.user.profile.friends.add(from_user)
     from_user.profile.friends.add(request.user)
+    Friendship.objects.get_or_create(from_user=request.user, to_user=from_user)
+    Friendship.objects.get_or_create(from_user=from_user, to_user=request.user)
     return redirect('friend_requests_list')
 
 @login_required
@@ -128,6 +134,8 @@ def unfriend_user(request, username):
     user_to_unfriend = get_object_or_404(User, username=username)
     request.user.profile.friends.remove(user_to_unfriend)
     user_to_unfriend.profile.friends.remove(request.user)
+    Friendship.objects.filter(from_user=request.user, to_user=user_to_unfriend).delete()
+    Friendship.objects.filter(from_user=user_to_unfriend, to_user=request.user).delete()
     return redirect('view_profile', username=username)
 
 @login_required

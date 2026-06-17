@@ -1,8 +1,45 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-    <div class="text-center">
-        <h1 class="text-2xl font-bold mb-4">Welcome, {{ user.username }}!</h1>
-        <p>This is your dashboard. You can see your recent activity, friend requests, and more here.</p>
+    <div class="container mx-auto">
+        <div class="flex">
+            <div class="w-3/4">
+                <h1 class="text-2xl font-bold mb-4">Welcome, {{ user.username }}!</h1>
+                <p>This is your dashboard. You can see your recent activity, friend requests, and more here.</p>
+
+                <hr class="my-8">
+
+                <h2 class="text-xl font-bold mb-4">My Groups</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for group in groups %}
+                        <div class="bg-white rounded-lg shadow-md p-4">
+                            {% if group.cover_image %}
+                                <img src="{{ group.cover_image.url }}" alt="{{ group.name }} cover image" class="rounded-t-lg h-32 w-full object-cover">
+                            {% endif %}
+                            <div class="p-4">
+                                <h3 class="font-bold"><a href="{% url 'groups:group_detail' group.pk %}">{{ group.name }}</a></h3>
+                                <p class="text-gray-600">{{ group.members.count }} member{{ group.members.count|pluralize }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>You are not a member of any groups.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="w-1/4 pl-8">
+                <h2 class="text-xl font-bold mb-4">Friends</h2>
+                <ul>
+                    {% for friend in friends %}
+                    <li class="flex items-center mb-2">
+                        <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}/static/default_avatar.png{% endif %}" alt="{{ friend.username }} avatar" class="rounded-full mr-2" width="40">
+                        <a href="{% url 'view_profile' friend.username %}">{{ friend.username }}</a>
+                        <button class="ml-auto bg-blue-500 text-white px-2 py-1 rounded">Message</button>
+                    </li>
+                    {% empty %}
+                    <p>You have no friends yet.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
 {% endblock %}
