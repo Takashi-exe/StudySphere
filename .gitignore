@@ -20,4 +20,5 @@ db.sqlite3
 
 # Static and media files
 /staticfiles/
-/media/
+/media/*
+!/media/avatars/default_avatar.png
