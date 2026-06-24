@@ -1,12 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-    <div class="max-w-md mx-auto">
-        <h2 class="text-2xl font-bold mb-4">Register</h2>
+<div class="min-h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-white text-center mb-8">Create your StudySphere Account</h2>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Register</button>
+            <div class="mb-4">
+                <label for="id_username" class="block text-gray-400 mb-2">Username</label>
+                <input type="text" name="username" id="id_username" class="w-full bg-gray-700 rounded-md p-2 text-white" required>
+            </div>
+            <div class="mb-4">
+                <label for="id_email" class="block text-gray-400 mb-2">Email</label>
+                <input type="email" name="email" id="id_email" class="w-full bg-gray-700 rounded-md p-2 text-white" required>
+            </div>
+            <div class="mb-4">
+                <label for="id_password" class="block text-gray-400 mb-2">Password</label>
+                <input type="password" name="password" id="id_password" class="w-full bg-gray-700 rounded-md p-2 text-white" required>
+            </div>
+            <div class="mb-6">
+                <label for="id_password_confirm" class="block text-gray-400 mb-2">Confirm Password</label>
+                <input type="password" name="password_confirm" id="id_password_confirm" class="w-full bg-gray-700 rounded-md p-2 text-white" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Register</button>
         </form>
+        <p class="text-center text-gray-400 mt-4">
+            Already have an account? <a href="{% url 'login' %}" class="text-blue-400 hover:underline">Login here</a>
+        </p>
     </div>
+</div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import StudyGroup, GroupMembership
+from .models import StudyGroup, GroupMembership, GroupChatMessage
 from studySessions.models import StudySession
 
 @login_required
@@ -30,14 +30,22 @@ def create_group(request):
 
 @login_required
 def group_detail(request, group_id):
-    group = get_object_or_404(StudyGroup.objects.prefetch_related('members'), id=group_id)
-    active_session = StudySession.objects.filter(group=group, is_active=True).first()
+    group = get_object_or_404(StudyGroup.objects.prefetch_related('members', 'chat_messages__user__profile'), id=group_id)
+    
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            GroupChatMessage.objects.create(group=group, user=request.user, content=content)
+            return redirect('groups:group_detail', group_id=group.id)
+
+    past_sessions = StudySession.objects.filter(group=group, is_active=False).order_by('-start_time')
     is_member = group.members.filter(id=request.user.id).exists()
     is_admin = is_member and GroupMembership.objects.filter(user=request.user, group=group, role='admin').exists()
 
     context = {
         'group': group,
-        'active_session': active_session,
+        'chat_messages': group.chat_messages.all(),
+        'past_sessions': past_sessions,
         'is_member': is_member,
         'is_admin': is_admin,
     }

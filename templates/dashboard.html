@@ -10,19 +10,18 @@
                 <hr class="my-8">
 
                 <h2 class="text-xl font-bold mb-4">My Groups</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     {% for group in groups %}
-                        <div class="bg-white rounded-lg shadow-md p-4">
-                            {% if group.cover_image %}
-                                <img src="{{ group.cover_image.url }}" alt="{{ group.name }} cover image" class="rounded-t-lg h-32 w-full object-cover">
-                            {% endif %}
-                            <div class="p-4">
-                                <h3 class="font-bold"><a href="{% url 'groups:group_detail' group.pk %}">{{ group.name }}</a></h3>
-                                <p class="text-gray-600">{{ group.members.count }} member{{ group.members.count|pluralize }}</p>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <p>You are not a member of any groups.</p>
+                    <div class="bg-gray-800 rounded-lg shadow p-4">
+                        {% if group.cover_image %}
+                        <img src="{{ group.cover_image.url }}" class="w-full h-32 object-cover rounded-md mb-4" alt="{{ group.name }}">
+                        {% else %}
+                        <div class="w-full h-32 bg-gray-700 rounded-md mb-4 flex items-center justify-center text-gray-500">No Image</div>
+                        {% endif %}
+                        <h5 class="text-xl font-bold mb-2">{{ group.name }}</h5>
+                        <p class="text-gray-400 mb-4">{{ group.members.count }} members</p>
+                        <a href="{% url 'groups:group_detail' group.id %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Group</a>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
