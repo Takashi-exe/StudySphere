@@ -11,7 +11,7 @@
         <ul class="mb-4">
             {% for session in past_sessions %}
             <li class="mb-2">
-                <a href="{% url 'studeySessions:session_detail' session.id %}" class="text-white hover:text-gray-300"># {{ session.title }}</a>
+                <a href="{% url 'studySessions:session_detail' session.id %}" class="text-white hover:text-gray-300"># {{ session.title }}</a>
             </li>
             {% empty %}
             <li class="text-gray-400">No past sessions yet.</li>
@@ -27,6 +27,18 @@
             </li>
             {% endfor %}
         </ul>
+        {% if is_member %}
+        <div class="mt-4">
+            <h3 class="text-md font-semibold mb-2">Start a new session</h3>
+            <form method="post" action="{% url 'studySessions:start_session' group.id %}">
+                {% csrf_token %}
+                <input type="text" name="title" class="w-full bg-gray-700 rounded-md p-2 text-white mb-2" placeholder="Session Title" required>
+                <textarea name="description" class="w-full bg-gray-700 rounded-md p-2 text-white mb-2" placeholder="Session Description"></textarea>
+                <input type="number" name="duration_minutes" class="w-full bg-gray-700 rounded-md p-2 text-white mb-2" placeholder="Duration in minutes" required>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Start Session</button>
+            </form>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Chat Area -->
