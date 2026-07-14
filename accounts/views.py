@@ -5,11 +5,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm, UserForm, ProfileForm
 from .models import Profile, FriendRequest
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.http import JsonResponse
 from django.utils import timezone
 from django.contrib import messages
 from django.core.paginator import Paginator
+from groups.models import StudyGroup
 
 def register_view(request):
     if request.method == 'POST':
@@ -42,7 +43,13 @@ def logout_view(request):
 @login_required
 def profile_view(request, username=None):
     if username:
-        profile_user = get_object_or_404(User, username=username)
+        profile_user = get_object_or_404(
+            User.objects.prefetch_related(
+                'profile',
+                Prefetch('study_groups', queryset=StudyGroup.objects.prefetch_related('members__profile'))
+            ),
+            username=username
+        )
     else:
         profile_user = request.user
 

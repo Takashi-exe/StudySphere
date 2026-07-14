@@ -8,14 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: var(--bg-page); color: var(--text-headings); }
-        .bg-surface-primary { background-color: var(--bg-surface-primary); }
-        .bg-surface-secondary { background-color: var(--bg-surface-secondary); }
+        .bg-surface-primary { background-color: var(--bg-card); }
+        .bg-surface-secondary { background-color: var(--bg-card-hover); }
         .border-primary { border-color: var(--border-primary); }
         .text-accent-primary { color: var(--accent-primary); }
         .bg-accent-primary { background-color: var(--accent-primary); }
-        .text-muted { color: var(--text-muted); }
+        .text-muted { color: var(--text-muted-purple); }
         .hover\:bg-accent-primary-darker:hover { background-color: #b3a2e0; } /* Slightly darker for hover */
-        .hover\:bg-surface-tertiary:hover { background-color: var(--bg-surface-tertiary); }
+        .hover\:bg-surface-tertiary:hover { background-color: var(--bg-card-hover); }
     </style>
 {% endblock %}
 
@@ -30,7 +30,7 @@
             <a href="{% url 'accounts:register' %}" class="inline-block rounded-lg bg-accent-primary px-6 py-3 text-center font-medium text-black hover:bg-accent-primary-darker">
                 Get Started
             </a>
-            <a href="{% url 'accounts:login' %}" class="inline-block rounded-lg bg-surface-tertiary px-6 py-3 text-center font-medium text-headings hover:bg-surface-tertiary">
+            <a href="{% url 'accounts:login' %}" class="inline-block rounded-lg bg-card-hover px-6 py-3 text-center font-medium text-headings hover:bg-card-hover">
                 Login to your account
             </a>
         </div>
@@ -90,10 +90,10 @@
                 <a href="#" class="text-muted hover:text-headings">Contact Support</a>
             </div>
             <div class="flex gap-4">
-                <div class="w-8 h-8 bg-surface-tertiary rounded-full flex items-center justify-center">
+                <div class="w-8 h-8 bg-card-hover rounded-full flex items-center justify-center">
                     <i data-lucide="send" class="w-4 h-4 text-muted"></i>
                 </div>
-                <div class="w-8 h-8 bg-surface-tertiary rounded-full flex items-center justify-center">
+                <div class="w-8 h-8 bg-card-hover rounded-full flex items-center justify-center">
                     <i data-lucide="circle" class="w-4 h-4 text-muted"></i>
                 </div>
             </div>

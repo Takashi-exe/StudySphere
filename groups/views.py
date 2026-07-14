@@ -5,6 +5,9 @@ from .models import StudyGroup, GroupMembership, GroupChatMessage, GroupResource
 from .forms import GroupForm, GroupResourceForm
 from studySessions.models import StudySession
 from django.db.models import Prefetch
+from django.http import HttpResponseForbidden, JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.models import User
 
 @login_required
 def group_list(request):
@@ -30,7 +33,6 @@ def create_group(request):
 def group_detail(request, group_id):
     group = get_object_or_404(
         StudyGroup.objects.prefetch_related(
-            'members__profile', 
             'chat_messages__user__profile', 
             'resources__uploaded_by__profile'
         ), 
@@ -43,7 +45,6 @@ def group_detail(request, group_id):
             GroupChatMessage.objects.create(group=group, user=request.user, content=content)
             return redirect('groups:group_detail', group_id=group.id)
 
-    # Use Prefetch to get participants for active sessions
     active_session_prefetch = Prefetch(
         'sessions',
         queryset=StudySession.objects.filter(is_active=True).prefetch_related('participants__profile'),
@@ -52,11 +53,19 @@ def group_detail(request, group_id):
     group_with_active_session = StudyGroup.objects.prefetch_related(active_session_prefetch).get(id=group_id)
     active_session = group_with_active_session.active_sessions_list[0] if group_with_active_session.active_sessions_list else None
 
-    past_group_sessions = StudySession.objects.filter(group=group, is_active=False).order_by('-start_time')[:5]
+    past_group_sessions = StudySession.objects.filter(group=group, is_active=False).order_by('-start_time')[:2]
     user_study_history = StudySession.objects.filter(participants=request.user, is_active=False).order_by('-start_time')[:5]
 
-    is_member = group.members.filter(id=request.user.id).exists()
-    is_admin = is_member and GroupMembership.objects.filter(user=request.user, group=group, role='admin').exists()
+    memberships = GroupMembership.objects.filter(group=group).select_related('user', 'user__profile').order_by('joined_at')
+    is_member = request.user.id in [m.user_id for m in memberships]
+    
+    is_admin = False
+    if is_member:
+        for m in memberships:
+            if m.user_id == request.user.id and m.role == 'admin':
+                is_admin = True
+                break
+    
     resource_form = GroupResourceForm()
 
     context = {
@@ -68,6 +77,7 @@ def group_detail(request, group_id):
         'has_active_session': active_session is not None,
         'is_member': is_member,
         'is_admin': is_admin,
+        'memberships': memberships,
         'resource_form': resource_form,
     }
     return render(request, 'groups/group_detail.html', context)
@@ -95,3 +105,80 @@ def join_group(request, invite_code):
     else:
         messages.info(request, f"You are already a member of the group '{group.name}'.")
     return redirect('groups:group_detail', group_id=group.id)
+
+@require_POST
+@login_required
+def add_member(request, group_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    is_admin = GroupMembership.objects.filter(user=request.user, group=group, role='admin').exists()
+    if not is_admin:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    username = request.POST.get('username', '').strip()
+    target_user = get_object_or_404(User, username=username)
+
+    if group.members.filter(id=target_user.id).exists():
+        return JsonResponse({'error': 'Already a member'}, status=400)
+    
+    GroupMembership.objects.create(user=target_user, group=group, role='member')
+    return JsonResponse({'success': True, 'username': target_user.username})
+
+@require_POST
+@login_required
+def remove_member(request, group_id, user_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    membership = get_object_or_404(GroupMembership, group=group, user_id=user_id)
+    
+    if not GroupMembership.objects.filter(user=request.user, group=group, role='admin').exists():
+        return HttpResponseForbidden("You do not have permission to remove members.")
+    if str(group.created_by_id) == str(user_id):
+        messages.error(request, "The group creator cannot be removed.")
+        return redirect('groups:group_detail', group_id=group.id)
+    if request.user.id == int(user_id):
+        messages.error(request, "You cannot remove yourself.")
+        return redirect('groups:group_detail', group_id=group.id)
+    
+    membership.delete()
+    messages.success(request, f"{membership.user.username} has been removed from the group.")
+    return redirect('groups:group_detail', group_id=group.id)
+
+@require_POST
+@login_required
+def promote_member(request, group_id, user_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    if request.user != group.created_by:
+        return HttpResponseForbidden("Only the group creator can promote members.")
+    
+    membership = get_object_or_404(GroupMembership, group=group, user_id=user_id)
+    membership.role = 'admin'
+    membership.save()
+    messages.success(request, f"{membership.user.username} has been promoted to admin.")
+    return redirect('groups:group_detail', group_id=group.id)
+
+@require_POST
+@login_required
+def demote_member(request, group_id, user_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    if request.user != group.created_by:
+        return HttpResponseForbidden("Only the group creator can demote members.")
+    if int(user_id) == group.created_by_id:
+        return HttpResponseForbidden("The group creator cannot be demoted.")
+        
+    membership = get_object_or_404(GroupMembership, group=group, user_id=user_id)
+    membership.role = 'member'
+    membership.save()
+    messages.success(request, f"{membership.user.username} has been demoted to member.")
+    return redirect('groups:group_detail', group_id=group.id)
+
+@require_POST
+@login_required
+def leave_group(request, group_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    if request.user == group.created_by:
+        messages.error(request, "Group creators cannot leave the group. You can delete it instead.")
+        return redirect('groups:group_detail', group_id=group.id)
+    
+    membership = get_object_or_404(GroupMembership, group=group, user=request.user)
+    membership.delete()
+    messages.success(request, f"You have left the group '{group.name}'.")
+    return redirect('groups:group_list')
