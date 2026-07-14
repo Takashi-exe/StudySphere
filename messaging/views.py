@@ -6,10 +6,33 @@ from django.db.models import Q, Max, Count
 from itertools import groupby
 from django.http import JsonResponse
 
+def get_unique_conversations(user):
+    """
+    Helper function to get a deduplicated list of 1:1 conversations.
+    """
+    conversations = user.conversations.annotate(
+        last_message_time=Max('messages__created_at'),
+        num_participants=Count('participants')
+    ).filter(
+        num_participants=2
+    ).order_by('-last_message_time')
+
+    seen_users = set()
+    unique_conversations = []
+    for conv in conversations.prefetch_related('participants'):
+        other_users = [p for p in conv.participants.all() if p != user]
+        if not other_users:
+            continue
+        other_user_id = other_users[0].id
+        if other_user_id not in seen_users:
+            seen_users.add(other_user_id)
+            unique_conversations.append(conv)
+    return unique_conversations
+
 @login_required
 def conversation_list(request):
-    conversations = request.user.conversations.annotate(last_message_time=Max('messages__created_at')).order_by('-last_message_time')
-    return render(request, 'messaging/conversation_list.html', {'conversations': conversations})
+    unique_conversations = get_unique_conversations(request.user)
+    return render(request, 'messaging/conversation_list.html', {'conversations': unique_conversations})
 
 @login_required
 def conversation_detail(request, conversation_id):
@@ -33,13 +56,13 @@ def conversation_detail(request, conversation_id):
     messages = conversation.messages.all().order_by('created_at')
     grouped_messages = {k: list(v) for k, v in groupby(messages, key=lambda m: m.created_at.date())}
 
-    # Get all conversations for the inbox panel
-    conversations = request.user.conversations.annotate(last_message_time=Max('messages__created_at')).order_by('-last_message_time')
+    # Get all conversations for the inbox panel, with deduplication
+    unique_conversations = get_unique_conversations(request.user)
 
     context = {
         'conversation': conversation,
         'grouped_messages': grouped_messages,
-        'conversations': conversations,
+        'conversations': unique_conversations,
         'active_conversation_id': conversation.id
     }
     return render(request, 'messaging/conversation_detail.html', context)

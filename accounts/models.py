@@ -26,3 +26,37 @@ class FriendRequest(models.Model):
 
     def __str__(self):
         return f"From {self.sender} to {self.receiver} ({self.status})"
+
+class Notification(models.Model):
+    NOTIF_TYPES = [
+        ('friend_request', 'Friend Request'),
+        ('session_start', 'Session Start'),
+        ('group_invite', 'Group Invite'),
+        ('new_post', 'New Post'),
+        ('system', 'System'),
+    ]
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='sent_notifications')
+    notif_type = models.CharField(max_length=20, choices=NOTIF_TYPES)
+    message = models.TextField()
+    link = models.CharField(max_length=255, blank=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for {self.recipient.username}: {self.notif_type}"
+
+def create_notification(recipient, notif_type, message, link='', sender=None):
+    """
+    Helper to create a notification from anywhere in the codebase.
+    """
+    Notification.objects.create(
+        recipient=recipient,
+        sender=sender,
+        notif_type=notif_type,
+        message=message,
+        link=link,
+    )

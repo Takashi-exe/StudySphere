@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-white">Notifications</h1>
+            {% if unread_notif_count > 0 %}
+            <form id="mark-all-read-form" method="post" action="{% url 'mark_all_read' %}">
+                {% csrf_token %}
+                <button type="submit" class="text-sm font-semibold text-[#ADC6FF] hover:underline">Mark all as read</button>
+            </form>
+            {% endif %}
+        </div>
+
+        <div class="bg-[#222A3D] rounded-lg divide-y divide-[#2D3449]/50">
+            {% for notif in page_obj %}
+            <a href="{% url 'notification_click' notif.id %}" class="block p-4 hover:bg-[#2D3449]/50 {% if not notif.is_read %}border-l-4 border-[#D0BCFF] bg-[#D0BCFF]/5{% endif %}">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 flex-shrink-0 bg-[#131B2E] rounded-full flex items-center justify-center">
+                        {% if notif.notif_type == 'friend_request' %}<i data-lucide="user-plus" class="w-5 h-5 text-[#958EA0]"></i>
+                        {% elif notif.notif_type == 'session_start' %}<i data-lucide="play" class="w-5 h-5 text-[#958EA0]"></i>
+                        {% elif notif.notif_type == 'group_invite' %}<i data-lucide="users" class="w-5 h-5 text-[#958EA0]"></i>
+                        {% elif notif.notif_type == 'new_post' %}<i data-lucide="message-square" class="w-5 h-5 text-[#958EA0]"></i>
+                        {% else %}<i data-lucide="bell" class="w-5 h-5 text-[#958EA0]"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow">
+                        {% if notif.sender %}
+                        <img src="{% if notif.sender.profile.avatar %}{{ notif.sender.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ notif.sender.username|urlencode }}&background=random{% endif %}" alt="{{ notif.sender.username }}" class="w-6 h-6 rounded-full inline-block mr-2">
+                        {% endif %}
+                        <p class="text-sm text-white inline">{{ notif.message }}</p>
+                        <p class="text-xs text-[#958EA0] mt-1">{{ notif.created_at|timesince }} ago</p>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="p-16 text-center text-[#958EA0]">
+                <i data-lucide="bell-off" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                <p>No notifications yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <div class="mt-8 flex justify-center">
+            <nav class="flex items-center gap-2">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="p-2 rounded-md hover:bg-[#2D3449]/50"><i data-lucide="chevron-left" class="w-5 h-5"></i></a>
+                {% endif %}
+                <span class="text-sm text-[#958EA0]">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="p-2 rounded-md hover:bg-[#2D3449]/50"><i data-lucide="chevron-right" class="w-5 h-5"></i></a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const markAllReadForm = document.getElementById('mark-all-read-form');
+    if (markAllReadForm) {
+        markAllReadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            fetch(markAllReadForm.action, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}

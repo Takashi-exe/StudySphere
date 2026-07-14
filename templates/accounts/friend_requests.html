@@ -4,19 +4,19 @@
 {% block title %}Friend Requests{% endblock %}
 
 {% block content %}
-<div class="p-8">
+<div class="p-8 bg-[#171F33] min-h-full">
     <div class="max-w-4xl mx-auto">
         <div class="mb-8">
-            <h1 class="text-3xl font-bold">Friend Requests</h1>
+            <h1 class="text-3xl font-bold text-white">Friend Requests</h1>
             <p class="text-[#958EA0]">Manage incoming friend requests.</p>
         </div>
 
-        <div class="bg-[#182234] rounded-lg">
+        <div class="bg-[#222A3D] rounded-lg">
             {% if friend_requests %}
                 <ul class="divide-y divide-[#2D3449]/50">
                     {% for request in friend_requests %}
                         <li class="p-4 flex items-center">
-                            <a href="{% url 'accounts:view_profile' username=request.sender.username %}" class="flex items-center flex-grow">
+                            <a href="{% url 'view_profile' username=request.sender.username %}" class="flex items-center flex-grow">
                                 <img src="{% if request.sender.profile.avatar %}{{ request.sender.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ request.sender.username|urlencode }}&background=random{% endif %}"
                                      alt="{{ request.sender.username }}"
                                      class="w-12 h-12 rounded-full mr-4">
@@ -26,8 +26,8 @@
                                 </div>
                             </a>
                             <div class="ml-auto flex gap-3">
-                                <a href="{% url 'accounts:accept_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/80 text-white hover:bg-green-500">Accept</a>
-                                <a href="{% url 'accounts:reject_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/80 text-white hover:bg-red-500">Decline</a>
+                                <a href="{% url 'accept_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/80 text-white hover:bg-green-500">Accept</a>
+                                <a href="{% url 'reject_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/80 text-white hover:bg-red-500">Decline</a>
                             </div>
                         </li>
                     {% endfor %}

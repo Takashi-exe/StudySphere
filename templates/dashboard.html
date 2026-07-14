@@ -11,8 +11,6 @@
             <h1 class="text-3xl font-bold text-white">Welcome back, {{ user.first_name|default:user.username }}</h1>
             <div class="flex items-center gap-4">
                 <a href="{% url 'groups:create_group' %}" class="px-4 py-2 rounded-full text-sm font-semibold bg-[#D0BCFF] text-[#0B1326]">Create Group +</a>
-                <button class="p-2 rounded-full bg-[#0B1326]"><i data-lucide="bell" class="w-5 h-5 text-[#958EA0]"></i></button>
-                <button class="p-2 rounded-full bg-[#0B1326]"><i data-lucide="settings" class="w-5 h-5 text-[#958EA0]"></i></button>
             </div>
         </div>
 
@@ -43,7 +41,7 @@
         <div class="space-y-4">
             {% for friend in friends %}
             <div class="flex items-center justify-between">
-                <a href="{% url 'accounts:view_profile' username=friend.username %}" class="flex items-center gap-3">
+                <a href="{% url 'view_profile' username=friend.username %}" class="flex items-center gap-3">
                     <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username|urlencode }}&background=random{% endif %}" alt="{{ friend.username }}" class="w-10 h-10 rounded-full">
                     <div>
                         <div class="font-bold text-white">{{ friend.username }}</div>
@@ -58,7 +56,7 @@
             <p class="text-sm text-[#958EA0]">You haven't added any friends yet.</p>
             {% endfor %}
         </div>
-        <a href="{% url 'accounts:user_search' %}" class="mt-8 w-full text-center py-2 rounded-lg border border-[#2D3449]/30 text-sm font-semibold text-[#958EA0] hover:bg-[#2D3449]/50">+ Invite Friends</a>
+        <a href="{% url 'user_search' %}" class="mt-8 w-full text-center py-2 rounded-lg border border-[#2D3449]/30 text-sm font-semibold text-[#958EA0] hover:bg-[#2D3449]/50">+ Invite Friends</a>
     </aside>
 </div>
 

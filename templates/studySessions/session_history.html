@@ -1,76 +1,60 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Session History for {{ group.name }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h1 class="h2">Session History</h1>
-            <p class="text-secondary">Past study sessions for {{ group.name }}</p>
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <a href="{% url 'groups:group_detail' group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Back to {{ group.name }}
+            </a>
+            <h1 class="text-3xl font-bold text-white">Session History</h1>
+            <p class="text-[#958EA0]">Review past study sessions for this group.</p>
         </div>
-        <a href="{% url 'groups:group_detail' group.id %}" class="btn btn-secondary">Back to Group</a>
-    </div>
 
-    <div class="card">
-        <div class="card-body">
-            {% if page_obj %}
-                <ul class="list-group list-group-flush">
-                    {% for session in page_obj %}
-                        <li class="list-group-item px-0 py-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="mb-1"><a href="{% url 'studySessions:session_detail' session.id %}" class="text-decoration-none">{{ session.title }}</a></h5>
-                                    <small class="text-secondary">
-                                        {{ session.start_time|date:"F d, Y" }} &middot; {{ session.duration_minutes }} minutes
-                                    </small>
-                                </div>
-                                <a href="{% url 'studySessions:session_detail' session.id %}" class="btn btn-sm btn-outline-secondary">View Details</a>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="text-center py-5">
-                    <i data-lucide="history" class="text-secondary mb-3" style="width: 48px; height: 48px;"></i>
-                    <h5 class="card-title">No Session History</h5>
-                    <p class="text-secondary">This group has no past study sessions.</p>
+        <div class="bg-[#222A3D] rounded-lg divide-y divide-[#2D3449]/50">
+            {% for session in page_obj %}
+            <div class="p-4 flex items-center">
+                <div class="flex-grow">
+                    <a href="{% url 'studySessions:session_detail' session.id %}" class="font-semibold text-white hover:underline">{{ session.title }}</a>
+                    <p class="text-sm text-[#958EA0]">
+                        {{ session.start_time|date:"F j, Y" }} • {{ session.duration_minutes }} minutes
+                        {% if session.summary %}
+                        <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-[#4EDEA3]/10 text-[#4EDEA3] inline-flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Summarized</span>
+                        {% endif %}
+                    </p>
                 </div>
-            {% endif %}
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-[#958EA0]">{{ session.posts.count }} posts</span>
+                    <a href="{% url 'studySessions:session_detail' session.id %}" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#2D3449] hover:bg-[#494454]">
+                        {% if session.summary %}View Summary{% else %}View Details{% endif %}
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-16 text-center text-[#958EA0]">
+                <i data-lucide="history" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                <p>No past sessions for this group yet.</p>
+            </div>
+            {% endfor %}
         </div>
-    </div>
 
-    {% if page_obj.has_other_pages %}
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
+        {% if page_obj.has_other_pages %}
+        <div class="mt-8 flex justify-center">
+            <nav class="flex items-center gap-2">
                 {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
-                {% else %}
-                    <li class="page-item disabled"><a class="page-link" href="#">&laquo; First</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                <a href="?page={{ page_obj.previous_page_number }}" class="p-2 rounded-md hover:bg-[#2D3449]/50"><i data-lucide="chevron-left" class="w-5 h-5"></i></a>
                 {% endif %}
-
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">{{ page_obj.number }} <span class="visually-hidden">(current)</span></a>
-                </li>
-
+                <span class="text-sm text-[#958EA0]">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
                 {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
-                {% else %}
-                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#">Last &raquo;</a></li>
+                <a href="?page={{ page_obj.next_page_number }}" class="p-2 rounded-md hover:bg-[#2D3449]/50"><i data-lucide="chevron-right" class="w-5 h-5"></i></a>
                 {% endif %}
-            </ul>
-        </nav>
-    {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-    lucide.createIcons();
-</script>
 {% endblock %}

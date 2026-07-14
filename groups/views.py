@@ -8,6 +8,8 @@ from django.db.models import Prefetch
 from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
+from accounts.models import create_notification
+from django.urls import reverse
 
 @login_required
 def group_list(request):
@@ -101,6 +103,16 @@ def join_group(request, invite_code):
     group = get_object_or_404(StudyGroup, invite_code=invite_code)
     if not group.members.filter(id=request.user.id).exists():
         GroupMembership.objects.create(user=request.user, group=group)
+        admins = GroupMembership.objects.filter(group=group, role='admin').select_related('user')
+        for admin_membership in admins:
+            if admin_membership.user != request.user:
+                create_notification(
+                    recipient=admin_membership.user,
+                    notif_type='group_invite',
+                    message=f"{request.user.username} joined your group '{group.name}'.",
+                    link=reverse('groups:group_detail', args=[group.id]),
+                    sender=request.user,
+                )
         messages.success(request, f"You have successfully joined the group '{group.name}'.")
     else:
         messages.info(request, f"You are already a member of the group '{group.name}'.")
@@ -121,6 +133,13 @@ def add_member(request, group_id):
         return JsonResponse({'error': 'Already a member'}, status=400)
     
     GroupMembership.objects.create(user=target_user, group=group, role='member')
+    create_notification(
+        recipient=target_user,
+        notif_type='group_invite',
+        message=f"You were added to the group '{group.name}' by {request.user.username}.",
+        link=reverse('groups:group_detail', args=[group.id]),
+        sender=request.user,
+    )
     return JsonResponse({'success': True, 'username': target_user.username})
 
 @require_POST

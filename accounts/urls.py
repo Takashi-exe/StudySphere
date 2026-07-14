@@ -1,8 +1,6 @@
 from django.urls import path
 from . import views
 
-app_name = 'accounts'
-
 urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
@@ -19,4 +17,8 @@ urlpatterns = [
     path('friend_request/reject/<str:from_user_username>/', views.reject_friend_request, name='reject_friend_request'),
     path('unfriend/<str:username>/', views.unfriend_user, name='unfriend_user'),
     path('block/<str:username>/', views.block_user, name='block_user'),
+    path('notifications/', views.notifications_view, name='notifications'),
+    path('notifications/<int:notif_id>/click/', views.notification_click, name='notification_click'),
+    path('notifications/unread-count/', views.notifications_unread_count, name='notifications_unread_count'),
+    path('notifications/mark-all-read/', views.mark_all_read, name='mark_all_read'),
 ]

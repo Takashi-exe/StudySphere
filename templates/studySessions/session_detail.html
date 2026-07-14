@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
+{% load session_extras %}
 
 {% block title %}{{ session.title }}{% endblock %}
 
 {% block content_wrapper %}
 <div class="flex h-full">
-    <!-- This page uses the main sidebar from base.html -->
-
     <!-- Center Column -->
     <main class="flex-1 flex flex-col bg-[#131B2E] border-l border-r border-[#2D3449]/50">
         <header class="flex items-center justify-between p-4 border-b border-[#2D3449]/50">
@@ -75,14 +74,6 @@
             </form>
             {% endif %}
         </div>
-        <div>
-            <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Active Members</h3>
-            <div class="flex -space-x-2">
-                {% for participant in session.participants.all %}
-                <img src="{% if participant.profile.avatar %}{{ participant.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ participant.username|urlencode }}&background=random{% endif %}" alt="{{ participant.username }}" class="w-8 h-8 rounded-full border-2 border-[#171F33]">
-                {% endfor %}
-            </div>
-        </div>
         {% else %}
         <div class="bg-[#222A3D] rounded-lg p-4">
             <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Session Summary</h3>
@@ -91,36 +82,70 @@
                 <div><p class="text-2xl font-bold">{{ total_notes }}</p><p class="text-xs text-[#958EA0]">Notes</p></div>
                 <div><p class="text-2xl font-bold">{{ session.participants.count }}</p><p class="text-xs text-[#958EA0]">Members</p></div>
             </div>
-            <a href="{% url 'studySessions:session_history' session.group.id %}" class="w-full block text-center px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] mb-2">View Session History</a>
+            {% if session.summary and session.summary.auto_summary %}
+            <div class="mt-4 pt-4 border-t border-[#2D3449]/30">
+                <p class="text-xs font-semibold text-[#958EA0] uppercase tracking-wider mb-3">Session Summary</p>
+                <ul class="space-y-2">
+                    {% for line in session.summary.auto_summary.splitlines %}
+                    {% if line.strip %}
+                    <li class="flex items-start gap-2 text-sm text-[#CBC3D7]">
+                        <span class="text-[#4EDEA3] mt-0.5 flex-shrink-0">•</span>
+                        {{ line|cut:"• " }}
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if session.summary and session.summary.top_contributors %}
+            <div class="mt-3">
+                <p class="text-xs font-semibold text-[#958EA0] uppercase tracking-wider mb-2">Top Contributors</p>
+                <div class="flex flex-wrap gap-2">
+                    {% for contributor in session.summary.top_contributors %}
+                    <span class="px-2 py-1 rounded-full bg-[#D0BCFF]/10 text-[#D0BCFF] text-xs">
+                        {{ contributor.username }}
+                        <span class="text-[#958EA0]">{{ contributor.post_count }} posts</span>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <a href="{% url 'studySessions:session_history' session.group.id %}" class="w-full block text-center px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] mb-2 mt-4">View Session History</a>
             <a href="{% url 'groups:group_detail' session.group.id %}" class="w-full block text-center px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#2D3449]/50">Back to Group Detail</a>
         </div>
-        <div class="mt-6">
-            <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Recent Contributors</h3>
-            <div class="space-y-3">
-                {% for contributor in contributors %}
-                <div class="flex items-center">
-                    <p class="text-sm font-medium flex-grow">{{ contributor.author__username }}</p>
-                    <p class="text-sm text-[#958EA0]">{{ contributor.message_count }} notes</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
         {% endif %}
-        <div class="mt-6">
-            <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Session Resources</h3>
-            <div class="space-y-3">
-                {% for resource in session.group.resources.all %}
-                <div class="flex items-center">
-                    <i data-lucide="file-text" class="w-6 h-6 text-[#ADC6FF] mr-3"></i>
-                    <div class="flex-grow"><p class="text-sm font-medium">{{ resource.file.name|cut:"group_resources/" }}</p><p class="text-xs text-[#958EA0]">Uploaded by {{ resource.uploaded_by.username }}</p></div>
-                    <a href="{{ resource.file.url }}" download class="p-2 rounded-full hover:bg-[#2D3449]/50"><i data-lucide="download" class="w-4 h-4 text-[#958EA0]"></i></a>
-                </div>
-                {% empty %}
-                <p class="text-sm text-center text-[#958EA0]">No resources for this group yet.</p>
-                {% endfor %}
+    </aside>
+</div>
+
+<!-- Session Summary Modal -->
+<div id="session-summary-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+    <div class="relative bg-[#171F33] border border-[#2D3449]/50 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <button id="close-summary-modal" class="absolute top-4 right-4 text-[#958EA0] hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-[#4EDEA3]/10 flex items-center justify-center"><i data-lucide="check-circle" class="w-5 h-5 text-[#4EDEA3]"></i></div>
+            <div>
+                <h2 class="text-lg font-bold text-white">Session Complete</h2>
+                <p id="summary-session-title" class="text-sm text-[#958EA0]"></p>
             </div>
         </div>
-    </aside>
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="bg-[#222A3D] rounded-xl p-3 text-center"><i data-lucide="message-square" class="w-4 h-4 text-[#D0BCFF] mx-auto mb-1"></i><p id="summary-total-posts" class="text-2xl font-bold text-white">0</p><p class="text-xs text-[#958EA0]">Posts</p></div>
+            <div class="bg-[#222A3D] rounded-xl p-3 text-center"><i data-lucide="users" class="w-4 h-4 text-[#D0BCFF] mx-auto mb-1"></i><p id="summary-participants" class="text-2xl font-bold text-white">0</p><p class="text-xs text-[#958EA0]">Members</p></div>
+            <div class="bg-[#222A3D] rounded-xl p-3 text-center"><i data-lucide="folder" class="w-4 h-4 text-[#D0BCFF] mx-auto mb-1"></i><p id="summary-files" class="text-2xl font-bold text-white">0</p><p class="text-xs text-[#958EA0]">Files</p></div>
+        </div>
+        <div class="mb-6">
+            <p class="text-xs font-semibold text-[#958EA0] uppercase tracking-wider mb-3">Session Summary</p>
+            <ul id="summary-bullets" class="space-y-2"></ul>
+        </div>
+        <div id="contributors-section" class="mb-6 hidden">
+            <p class="text-xs font-semibold text-[#958EA0] uppercase tracking-wider mb-3">Top Contributors</p>
+            <div id="contributors-list" class="flex gap-2 flex-wrap"></div>
+        </div>
+        <div class="flex gap-3">
+            <a id="summary-history-link" href="#" class="flex-1 text-center py-2 rounded-lg bg-[#D0BCFF] text-[#0B1326] font-semibold text-sm hover:bg-[#DAE2FD] transition-colors">View History</a>
+            <a id="summary-group-link" href="#" class="flex-1 text-center py-2 rounded-lg border border-[#2D3449] text-[#958EA0] text-sm hover:border-[#D0BCFF]/40 hover:text-white transition-colors">Back to Group</a>
+        </div>
+    </div>
 </div>
 
 <div id="toast" class="hidden fixed top-8 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-[#222A3D] border border-[#D0BCFF]/50 text-sm text-white">
@@ -130,6 +155,12 @@
 
 {% block extra_scripts %}
 <script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
     if ("{{ session.is_active }}") {
         const timerEl = document.getElementById('timer');
         const progressCircle = document.getElementById('timer-progress');
@@ -157,7 +188,40 @@
         const interval = setInterval(() => {
             if (remainingSeconds <= 0) {
                 clearInterval(interval);
-                document.getElementById('close-session-form')?.submit();
+                fetch("{% url 'studySessions:close_session' session.id %}", {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(r => r.json()).then(data => {
+                    if (data.status === 'ok') {
+                        document.getElementById('summary-session-title').textContent = data.session_title;
+                        document.getElementById('summary-total-posts').textContent = data.total_posts;
+                        document.getElementById('summary-participants').textContent = data.participants_count;
+                        document.getElementById('summary-files').textContent = data.files_shared;
+
+                        const ul = document.getElementById('summary-bullets');
+                        ul.innerHTML = '';
+                        data.auto_summary.split('\n').filter(l => l.trim()).forEach(line => {
+                            const li = document.createElement('li');
+                            li.className = 'flex items-start gap-2 text-sm text-[#CBC3D7]';
+                            li.innerHTML = `<span class="text-[#4EDEA3] mt-0.5 flex-shrink-0">•</span><span>${escapeHtml(line.replace(/^•\s*/, ''))}</span>`;
+                            ul.appendChild(li);
+                        });
+
+                        if (data.top_contributors && data.top_contributors.length > 0) {
+                            const section = document.getElementById('contributors-section');
+                            const list = document.getElementById('contributors-list');
+                            list.innerHTML = '';
+                            data.top_contributors.forEach(c => {
+                                list.insertAdjacentHTML('beforeend', `<span class="px-2 py-1 rounded-full bg-[#D0BCFF]/10 text-[#D0BCFF] text-xs font-medium">${escapeHtml(c.username)}<span class="text-[#958EA0] ml-1">${c.post_count} posts</span></span>`);
+                            });
+                            section.classList.remove('hidden');
+                        }
+
+                        document.getElementById('summary-history-link').href = `/studySessions/history/{{ session.group.id }}/`;
+                        document.getElementById('summary-group-link').href = `/groups/{{ session.group.id }}/`;
+                        document.getElementById('session-summary-modal').classList.remove('hidden');
+                    }
+                });
                 return;
             }
             remainingSeconds--;
@@ -172,37 +236,8 @@
         updateTimer();
     }
 
-    const postForm = document.getElementById('post-form');
-    if (postForm) {
-        postForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-            const content = formData.get('content');
-            if (content.trim() === '') return;
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            }).then(response => response.json()).then(data => {
-                if (data.status === 'ok') {
-                    const feed = document.getElementById('post-feed');
-                    const newPost = document.createElement('div');
-                    newPost.className = 'flex items-start gap-3';
-                    newPost.innerHTML = `
-                        <img src="${data.avatar_url}" alt="${data.author}" class="w-8 h-8 rounded-full">
-                        <div>
-                            <p class="text-sm font-semibold mb-1" style="color: hsl(${ (data.author.charCodeAt(0) + data.author.length) * 20 % 360 }, 70%, 70%);">${data.author}</p>
-                            <div class="p-3 rounded-lg bg-[#222A3D] text-white"><p class="text-sm">${data.content}</p></div>
-                        </div>
-                    `;
-                    feed.appendChild(newPost);
-                    feed.scrollTop = feed.scrollHeight;
-                    form.reset();
-                }
-            });
-        });
-    }
+    document.getElementById('close-summary-modal').addEventListener('click', () => {
+        document.getElementById('session-summary-modal').classList.add('hidden');
+    });
 </script>
 {% endblock %}

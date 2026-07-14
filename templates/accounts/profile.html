@@ -43,29 +43,29 @@
 
                     <div class="flex items-center gap-4">
                         {% if user == profile_user %}
-                            <a href="{% url 'accounts:edit_profile' %}" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-[#D0BCFF]/50 text-[#D0BCFF] hover:bg-[#D0BCFF]/10">
+                            <a href="{% url 'edit_profile' %}" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-[#D0BCFF]/50 text-[#D0BCFF] hover:bg-[#D0BCFF]/10">
                                 <i data-lucide="pencil" class="w-4 h-4"></i>
                                 Edit Profile
                             </a>
                         {% else %}
                             {% if friendship_status == 'friends' %}
-                                <a href="{% url 'accounts:unfriend_user' username=profile_user.username %}" class="text-sm text-[#958EA0] hover:text-red-400">Unfriend</a>
+                                <a href="{% url 'unfriend_user' username=profile_user.username %}" class="text-sm text-[#958EA0] hover:text-red-400">Unfriend</a>
                                 <a href="{% url 'start_conversation' username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326]">Message</a>
                             {% elif friendship_status == 'sent' %}
                                 <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#2D3449] text-[#958EA0]" disabled>Request Sent</button>
                             {% elif friendship_status == 'received' %}
-                                <a href="{% url 'accounts:reject_friend_request' from_user_username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/20 text-red-400 hover:bg-red-500/40">Decline</a>
-                                <a href="{% url 'accounts:accept_friend_request' from_user_username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/80 text-white">Accept</a>
+                                <a href="{% url 'reject_friend_request' from_user_username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/20 text-red-400 hover:bg-red-500/40">Decline</a>
+                                <a href="{% url 'accept_friend_request' from_user_username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/80 text-white">Accept</a>
                             {% elif friendship_status == 'blocked_by_you' %}
                                 <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-700 text-gray-400" disabled>Unblock to interact</button>
                             {% elif friendship_status == 'blocked_by_them' %}
                                  <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-700 text-gray-400" disabled>Cannot interact</button>
                             {% else %}
-                                <a href="{% url 'accounts:send_friend_request' to_user_username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326]">Add Friend</a>
+                                <a href="{% url 'send_friend_request' to_user_username=profile_user.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326]">Add Friend</a>
                             {% endif %}
 
                             {% if friendship_status != 'blocked_by_you' and friendship_status != 'blocked_by_them' %}
-                            <a href="{% url 'accounts:block_user' username=profile_user.username %}" class="text-xs text-red-500/70 hover:text-red-500">Block</a>
+                            <a href="{% url 'block_user' username=profile_user.username %}" class="text-xs text-red-500/70 hover:text-red-500">Block</a>
                             {% endif %}
                         {% endif %}
                     </div>

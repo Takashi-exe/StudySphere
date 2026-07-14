@@ -20,7 +20,7 @@
                 <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=random{% endif %}" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
                 <div>
                     <div class="font-bold">{{ user.profile.get_full_name|default:user.username }}</div>
-                    <a href="{% url 'accounts:profile' %}" class="text-xs tracking-widest uppercase text-[#958EA0]">View Profile</a>
+                    <a href="{% url 'profile' %}" class="text-xs tracking-widest uppercase text-[#958EA0]">View Profile</a>
                 </div>
             </div>
             {% endif %}
@@ -28,7 +28,7 @@
             <nav class="flex-grow">
                 <ul>
                     <li class="mb-2"><a href="{% url 'root' %}" class="flex items-center p-2 rounded-lg {% if request.resolver_match.url_name == 'root' %}bg-[#222A3D] text-[#D0BCFF]{% else %}text-[#958EA0]{% endif %}"><i data-lucide="layout-grid" class="w-5 h-5 mr-3"></i> Dashboard</a></li>
-                    <li class="mb-2"><a href="{% url 'accounts:friends_list' %}" class="flex items-center p-2 rounded-lg {% if request.resolver_match.url_name == 'friends_list' %}bg-[#222A3D] text-[#D0BCFF]{% else %}text-[#958EA0]{% endif %}"><i data-lucide="user-check" class="w-5 h-5 mr-3"></i> Friends</a></li>
+                    <li class="mb-2"><a href="{% url 'friends_list' %}" class="flex items-center p-2 rounded-lg {% if request.resolver_match.url_name == 'friends_list' %}bg-[#222A3D] text-[#D0BCFF]{% else %}text-[#958EA0]{% endif %}"><i data-lucide="user-check" class="w-5 h-5 mr-3"></i> Friends</a></li>
                     <li class="mb-2"><a href="{% url 'conversation_list' %}" class="flex items-center p-2 rounded-lg {% if request.resolver_match.url_name == 'conversation_list' %}bg-[#222A3D] text-[#D0BCFF]{% else %}text-[#958EA0]{% endif %}"><i data-lucide="message-circle" class="w-5 h-5 mr-3"></i> Messages</a></li>
                     <li class="mb-2"><a href="{% url 'groups:group_list' %}" class="flex items-center p-2 rounded-lg {% if 'groups' in request.resolver_match.app_names %}bg-[#222A3D] text-[#D0BCFF]{% else %}text-[#958EA0]{% endif %}"><i data-lucide="users" class="w-5 h-5 mr-3"></i> Study Rooms</a></li>
                     <li class="mb-2"><a href="#" class="flex items-center p-2 rounded-lg text-[#958EA0] opacity-50 cursor-not-allowed"><i data-lucide="bar-chart-2" class="w-5 h-5 mr-3"></i> Analytics</a></li>
@@ -37,26 +37,70 @@
 
             <div>
                 <ul>
-                    <li class="mb-2"><a href="{% url 'accounts:user_search' %}" class="flex items-center p-2 rounded-lg text-[#958EA0]"><i data-lucide="search" class="w-5 h-5 mr-3"></i> Search</a></li>
+                    <li class="mb-2"><a href="{% url 'user_search' %}" class="flex items-center p-2 rounded-lg text-[#958EA0]"><i data-lucide="search" class="w-5 h-5 mr-3"></i> Search</a></li>
                     <li class="mb-2"><a href="#" class="flex items-center p-2 rounded-lg text-[#958EA0]"><i data-lucide="help-circle" class="w-5 h-5 mr-3"></i> Help</a></li>
                     {% if user.is_authenticated %}
-                    <li class="mb-2"><a href="{% url 'accounts:logout' %}" class="flex items-center p-2 rounded-lg text-[#958EA0]"><i data-lucide="log-out" class="w-5 h-5 mr-3"></i> Logout</a></li>
+                    <li class="mb-2"><a href="{% url 'logout' %}" class="flex items-center p-2 rounded-lg text-[#958EA0]"><i data-lucide="log-out" class="w-5 h-5 mr-3"></i> Logout</a></li>
                     {% endif %}
                 </ul>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto">
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <header class="p-4 flex justify-end items-center gap-4">
+                <a href="{% url 'notifications' %}" class="relative p-2 rounded-full hover:bg-[#222A3D]">
+                    <i data-lucide="bell" class="w-5 h-5 text-[#958EA0]"></i>
+                    {% if unread_notif_count > 0 %}
+                    <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D0BCFF] text-[#060E20] text-[10px] font-bold flex items-center justify-center">
+                      {{ unread_notif_count }}
+                    </span>
+                    {% endif %}
+                </a>
+                <button class="p-2 rounded-full hover:bg-[#222A3D]"><i data-lucide="settings" class="w-5 h-5 text-[#958EA0]"></i></button>
+            </header>
+            <div class="flex-grow">
             {% block content_wrapper %}
                 {% block content %}{% endblock %}
             {% endblock %}
+            </div>
         </main>
     </div>
 
     <script>
         lucide.createIcons();
     </script>
-    {% block extra_scripts %}{% endblock %}
+    {% block extra_scripts %}
+    {% if user.is_authenticated %}
+    <script>
+       function updateNotifBadge() {
+         fetch("{% url 'notifications_unread_count' %}")
+           .then(r => r.json())
+           .then(data => {
+             const badge = document.getElementById('notif-badge');
+             if (badge) {
+                 if (data.count > 0) {
+                   badge.textContent = data.count;
+                   badge.style.display = 'flex';
+                 } else {
+                   badge.style.display = 'none';
+                 }
+             } else if (data.count > 0) {
+                // If badge doesn't exist, create it
+                const notifLink = document.querySelector('a[href="{% url 'notifications' %}"]');
+                if (notifLink) {
+                    const newBadge = document.createElement('span');
+                    newBadge.id = 'notif-badge';
+                    newBadge.className = "absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D0BCFF] text-[#060E20] text-[10px] font-bold flex items-center justify-center";
+                    newBadge.textContent = data.count;
+                    notifLink.appendChild(newBadge);
+                }
+             }
+           }).catch(() => {});
+       }
+       setInterval(updateNotifBadge, 30000);
+    </script>
+    {% endif %}
+    {% endblock %}
 </body>
 </html>
