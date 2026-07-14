@@ -214,9 +214,53 @@
         });
     }
 
-    // Existing WebSocket script
     const groupId = "{{ group.id }}";
     const chatSocket = new WebSocket(`ws://${window.location.host}/ws/group/${groupId}/`);
-    // ... (rest of the websocket script)
+    const chatLog = document.getElementById('chat-log');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-message-input');
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const messageEl = document.createElement('div');
+        const isCurrentUser = data.user === "{{ request.user.username }}";
+
+        messageEl.classList.add('flex', 'items-start', 'gap-3');
+        if (isCurrentUser) {
+            messageEl.classList.add('flex-row-reverse');
+        }
+
+        let senderHtml = '';
+        if (!isCurrentUser) {
+            senderHtml = `
+                <img src="${data.avatar_url}" alt="${data.user}" class="w-8 h-8 rounded-full">
+                <div class="max-w-md">
+                    <p class="text-sm font-semibold mb-1" style="color: hsl(${ (data.user.charCodeAt(0) + data.user.length) * 20 % 360 }, 70%, 70%);">${data.user}</p>
+            `;
+        } else {
+            senderHtml = `<div class="max-w-md">`;
+        }
+
+        messageEl.innerHTML = `
+            ${senderHtml}
+                <div class="p-3 rounded-2xl ${isCurrentUser ? 'bg-[#D0BCFF] text-[#0B1326]' : 'bg-[#222A3D] text-white'}">
+                    <p class="text-sm">${data.message}</p>
+                </div>
+            </div>
+            <p class="text-xs text-[#958EA0] mt-1 self-end">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+        `;
+        chatLog.appendChild(messageEl);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = chatInput.value;
+        if (message.trim() === '') return;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        chatInput.value = '';
+    });
 </script>
 {% endblock %}
