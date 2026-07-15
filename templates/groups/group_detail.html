@@ -19,6 +19,11 @@
                         <i data-lucide="play" class="inline w-4 h-4 mr-1"></i>Start Session
                     </a>
                 {% endif %}
+                {% if is_member %}
+                    <a href="{% url 'flashcards:deck_list' group.id %}" class="ml-2 px-3 py-1 rounded-full text-sm font-semibold bg-[#222A3D] text-[#D0BCFF] hover:bg-[#2D3449] flex items-center">
+                        <i data-lucide="layers" class="inline w-4 h-4 mr-1"></i>Flashcards
+                    </a>
+                {% endif %}
             </div>
             <div class="flex items-center gap-2">
                 <button class="p-2 rounded-full hover:bg-[#222A3D]"><i data-lucide="search" class="w-5 h-5 text-[#958EA0]"></i></button>
@@ -86,7 +91,6 @@
                     </div>
                 </div>
             </div>
-
             <div>
                 <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Add Members</h3>
                 {% if is_member %}
@@ -145,7 +149,9 @@
         </div>
     </aside>
 </div>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
     const groupId = "{{ group.id }}";
     const currentUser = "{{ request.user.username }}";

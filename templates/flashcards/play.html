@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Study: {{ deck.title }}{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/flashcards.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="p-8 flex flex-col items-center bg-[#171F33] min-h-full">
+    <div id="game-container" class="w-full max-w-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <a href="{% url 'flashcards:deck_detail' deck.group.id deck.id %}" class="text-sm text-[#958EA0] hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></a>
+            <div class="flex-grow mx-4">
+                <div id="progress-bar" class="w-full bg-[#2D3449]/50 rounded-full h-2.5">
+                    <div class="bg-[#D0BCFF] h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+            <div id="progress-text" class="text-sm text-[#958EA0]">1 / {{ cards_json|length }}</div>
+        </div>
+
+        <div id="card-container" class="relative">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front"></div>
+                    <div class="flip-card-back"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="controls" class="mt-8 flex justify-center gap-4 hidden">
+            <button id="try-again-btn" class="flex items-center gap-2 px-6 py-3 rounded-lg bg-red-500/20 text-red-400 font-semibold"><i data-lucide="rotate-ccw" class="w-5 h-5"></i> Try Again</button>
+            <button id="got-it-btn" class="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500/20 text-green-400 font-semibold"><i data-lucide="check" class="w-5 h-5"></i> Got It</button>
+        </div>
+
+        <div id="end-screen" class="hidden text-center p-8 bg-[#222A3D] rounded-xl">
+            <h2 class="text-3xl font-bold text-white">Session Complete!</h2>
+            <div class="my-6">
+                <p class="text-5xl font-bold text-white"><span id="score">0</span>/<span id="total">0</span></p>
+                <p class="text-[#958EA0]">Accuracy: <span id="accuracy">0</span>%</p>
+            </div>
+            <div id="missed-cards" class="mt-6 text-left">
+                <h3 class="font-bold text-white mb-2">Missed Cards:</h3>
+                <ul id="missed-list" class="space-y-1"></ul>
+            </div>
+            <div class="mt-8 flex flex-col gap-3">
+                <button id="retry-missed-btn" class="w-full px-4 py-2 rounded-lg font-semibold bg-[#A078FF] text-white">Retry Missed Cards</button>
+                <button id="study-again-btn" class="w-full px-4 py-2 rounded-lg font-semibold bg-[#2D3449] text-white">Study Again</button>
+                <a href="{% url 'flashcards:deck_detail' deck.group.id deck.id %}" class="w-full px-4 py-2 rounded-lg font-semibold border border-[#2D3449]/50 text-[#958EA0] hover:bg-[#2D3449]/50">Back to Deck</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="aria-live-region" class="sr-only" aria-live="polite"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        const cards = {{ cards_json|safe }};
+    </script>
+    <script src="{% static 'js/flashcard_game.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Flashcard Decks for {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <a href="{% url 'groups:group_detail' group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to {{ group.name }}
+                </a>
+                <h1 class="text-3xl font-bold text-white">Flashcard Decks</h1>
+            </div>
+            <a href="{% url 'flashcards:create_deck' group.id %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] flex items-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Create Deck
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for deck in decks %}
+            <a href="{% url 'flashcards:deck_detail' group.id deck.id %}" class="bg-[#222A3D] rounded-xl p-6 hover:bg-[#2D3449]/50">
+                <h3 class="font-bold text-white text-lg">{{ deck.title }}</h3>
+                <p class="text-sm text-[#958EA0] mt-2">{{ deck.cards.count }} cards</p>
+            </a>
+            {% empty %}
+            <div class="md:col-span-3 text-center py-16 text-[#958EA0]">
+                <i data-lucide="layers" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                <p>No flashcard decks yet for this group.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

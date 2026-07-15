@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ deck.title }}{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <a href="{% url 'flashcards:deck_list' deck.group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Back to Decks
+            </a>
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">{{ deck.title }}</h1>
+                    <p class="text-[#958EA0]">{{ deck.cards.count }} cards</p>
+                </div>
+                <div>
+                    <a href="{% url 'flashcards:edit_deck' deck.group.id deck.id %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#2D3449] text-white hover:bg-[#494454] flex items-center gap-2">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                        Edit
+                    </a>
+                    <a href="{% url 'flashcards:play_deck' deck.group.id deck.id %}" class="px-6 py-3 rounded-lg text-lg font-semibold bg-[#D0BCFF] text-[#0B1326] flex items-center gap-2">
+                        <i data-lucide="play" class="w-5 h-5"></i>
+                        Study
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-[#222A3D] rounded-lg divide-y divide-[#2D3449]/50">
+            {% for card in deck.cards.all %}
+            <div class="p-4 grid grid-cols-2 gap-4">
+                <p class="text-white">{{ card.front }}</p>
+                <p class="text-[#958EA0]">{{ card.back }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

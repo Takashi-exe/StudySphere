@@ -7,30 +7,21 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="UI Overhaul">
-      <change afterPath="$PROJECT_DIR$/accounts/context_processors.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/voice_call.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/studySessions/summary.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/studySessions/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/studySessions/templatetags/session_extras.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/notifications.html" afterDir="false" />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Implemented auto generated summaries after session ends, Added the call system">
+      <change afterPath="$PROJECT_DIR$/flashcards/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flashcards/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flashcards/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/flashcards.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/flashcard_game.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/flashcards/deck_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/flashcards/deck_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/flashcards/deck_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/flashcards/play.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/groups/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/consumers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/groups/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/routing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/groups/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messaging/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/messaging/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/friend_requests.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/friend_requests.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/user_search.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/user_search.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flashcards/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/flashcards/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flashcards/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/flashcards/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/groups/group_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/groups/group_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/messaging/inbox_panel.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/messaging/inbox_panel.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/studySessions/session_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/studySessions/session_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/studySessions/session_history.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/studySessions/session_history.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,7 +156,8 @@
       <workItem from="1783163438775" duration="733000" />
       <workItem from="1783892017423" duration="4632000" />
       <workItem from="1784031597680" duration="1235000" />
-      <workItem from="1784062370703" duration="4094000" />
+      <workItem from="1784062370703" duration="8188000" />
+      <workItem from="1784144085026" duration="961000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -271,7 +263,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784032949509</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Implemented auto generated summaries after session ends, Added the call system">
+      <option name="closed" value="true" />
+      <created>1784070834828</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1784070834828</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,6 +282,7 @@
     <MESSAGE value="Worked on user Profiles, friend system and private messaging system" />
     <MESSAGE value="Started working on group chats" />
     <MESSAGE value="UI Overhaul" />
-    <option name="LAST_COMMIT_MESSAGE" value="UI Overhaul" />
+    <MESSAGE value="Implemented auto generated summaries after session ends, Added the call system" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented auto generated summaries after session ends, Added the call system" />
   </component>
 </project>

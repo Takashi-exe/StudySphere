@@ -57,6 +57,27 @@
 
     <!-- Right Panel -->
     <aside class="w-80 flex-shrink-0 p-6 bg-[#171F33] overflow-y-auto space-y-6">
+        <!-- Voice Call Panel -->
+        <div>
+            <button id="join-call-btn" onclick="joinCall()" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326]">
+                <i data-lucide="mic" class="w-4 h-4"></i>
+                Join Call
+            </button>
+            <div id="in-call-panel" class="hidden flex-col gap-4 p-4 rounded-lg bg-[#222A3D]">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                        <span class="text-sm font-semibold text-green-400">Voice Active</span>
+                    </div>
+                    <div id="call-peers" class="flex -space-x-2"></div>
+                </div>
+                <div class="flex items-center justify-center gap-4">
+                    <button id="mute-btn" onclick="toggleMute()" class="p-2 rounded-full bg-[#131B2E]"><i data-lucide="mic" class="w-4 h-4"></i></button>
+                    <button onclick="leaveCall()" class="px-4 py-1.5 rounded-full text-sm font-semibold bg-red-500/20 text-red-400">Leave Call</button>
+                </div>
+            </div>
+        </div>
+
         {% if session.is_active %}
         <div>
             <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Live Session</h3>
@@ -155,13 +176,16 @@
 
 {% block extra_scripts %}
 <script>
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    }
-
+    const groupId = "{{ session.group.id }}";
+    const currentUser = "{{ request.user.username }}";
+</script>
+<script src="{% static 'js/voice_call.js' %}"></script>
+<script>
     if ("{{ session.is_active }}") {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => joinCall(), 1000);
+        });
+
         const timerEl = document.getElementById('timer');
         const progressCircle = document.getElementById('timer-progress');
         const totalSeconds = parseInt(timerEl.dataset.totalSeconds);
@@ -188,6 +212,7 @@
         const interval = setInterval(() => {
             if (remainingSeconds <= 0) {
                 clearInterval(interval);
+                leaveCall(); // Leave the call when the session ends
                 fetch("{% url 'studySessions:close_session' session.id %}", {
                     method: 'POST',
                     headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
