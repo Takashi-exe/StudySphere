@@ -24,7 +24,7 @@ class GroupMembership(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(StudyGroup, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=(('admin', 'Admin'), ('member', 'Member')), default='member')
+    role = models.CharField(max_length=10, choices=(('admin', 'Admin'), ('moderator', 'Moderator'), ('member', 'Member')), default='member')
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
