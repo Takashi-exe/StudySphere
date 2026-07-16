@@ -9,10 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/voice_call.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/voice_call.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/groups/group_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/groups/group_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/messaging/conversation_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/messaging/conversation_detail.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +72,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -154,7 +150,9 @@
       <workItem from="1784144085026" duration="6511000" />
       <workItem from="1784206552057" duration="3177000" />
       <workItem from="1784209852159" duration="7621000" />
-      <workItem from="1784236951728" duration="5856000" />
+      <workItem from="1784236951728" duration="6079000" />
+      <workItem from="1784243246071" duration="575000" />
+      <workItem from="1784243905155" duration="388000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -492,7 +490,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784240594614</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="...">
+      <option name="closed" value="true" />
+      <created>1784243132600</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1784243132600</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
