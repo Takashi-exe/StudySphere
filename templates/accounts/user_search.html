@@ -59,8 +59,8 @@
     const resultsList = document.getElementById('results-list');
     const userTemplate = document.getElementById('user-result-template');
 
-    const searchUrl = "{% url 'api_user_search' %}";
-    const profileUrlTemplate = "{% url 'view_profile' 'USERNAME_PLACEHOLDER' %}";
+    const searchUrl = "{% url 'accounts:api_user_search' %}";
+    const profileUrlTemplate = "{% url 'accounts:view_profile' 'USERNAME_PLACEHOLDER' %}";
 
     let searchTimeout;
 

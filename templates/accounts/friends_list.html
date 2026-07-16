@@ -12,7 +12,7 @@
             <p class="text-secondary">Manage your connections and start conversations.</p>
         </div>
         <div>
-            <a href="{% url 'user_search' %}" class="btn btn-primary d-flex align-items-center">
+            <a href="{% url 'accounts:user_search' %}" class="btn btn-primary d-flex align-items-center">
                 <i data-lucide="search" class="me-2"></i>Find Friends
             </a>
         </div>
@@ -24,7 +24,7 @@
                 <ul class="list-group list-group-flush">
                     {% for friend in friends %}
                         <li class="list-group-item d-flex align-items-center px-0 py-3">
-                            <a href="{% url 'view_profile' username=friend.username %}" class="text-decoration-none d-flex align-items-center flex-grow-1">
+                            <a href="{% url 'accounts:view_profile' username=friend.username %}" class="text-decoration-none d-flex align-items-center flex-grow-1">
                                 <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username }}&background=random{% endif %}"
                                      alt="{{ friend.username }}"
                                      class="rounded-circle me-3"
@@ -35,7 +35,7 @@
                                     <small class="text-secondary">{{ friend.first_name }} {{ friend.last_name }}</small>
                                 </div>
                             </a>
-                            <a href="{% url 'start_conversation' username=friend.username %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
+                            <a href="{% url 'messaging:start_conversation' username=friend.username %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
                                 <i data-lucide="message-square" class="me-2" style="width: 16px; height: 16px;"></i> Message
                             </a>
                         </li>
@@ -46,7 +46,7 @@
                     <i data-lucide="users" class="text-secondary mb-3" style="width: 48px; height: 48px;"></i>
                     <h5 class="card-title">No friends yet</h5>
                     <p class="text-secondary">You haven't added any friends to your network.</p>
-                    <a href="{% url 'user_search' %}" class="btn btn-primary mt-3">Find Friends</a>
+                    <a href="{% url 'accounts:user_search' %}" class="btn btn-primary mt-3">Find Friends</a>
                 </div>
             {% endif %}
         </div>

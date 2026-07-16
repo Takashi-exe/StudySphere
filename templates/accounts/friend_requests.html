@@ -16,7 +16,7 @@
                 <ul class="divide-y divide-[#2D3449]/50">
                     {% for request in friend_requests %}
                         <li class="p-4 flex items-center">
-                            <a href="{% url 'view_profile' username=request.sender.username %}" class="flex items-center flex-grow">
+                            <a href="{% url 'accounts:view_profile' username=request.sender.username %}" class="flex items-center flex-grow">
                                 <img src="{% if request.sender.profile.avatar %}{{ request.sender.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ request.sender.username|urlencode }}&background=random{% endif %}"
                                      alt="{{ request.sender.username }}"
                                      class="w-12 h-12 rounded-full mr-4">
@@ -26,8 +26,8 @@
                                 </div>
                             </a>
                             <div class="ml-auto flex gap-3">
-                                <a href="{% url 'accept_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/80 text-white hover:bg-green-500">Accept</a>
-                                <a href="{% url 'reject_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/80 text-white hover:bg-red-500">Decline</a>
+                                <a href="{% url 'accounts:accept_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/80 text-white hover:bg-green-500">Accept</a>
+                                <a href="{% url 'accounts:reject_friend_request' from_user_username=request.sender.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/80 text-white hover:bg-red-500">Decline</a>
                             </div>
                         </li>
                     {% endfor %}
