@@ -38,7 +38,7 @@ def conversation_list(request):
 def conversation_detail(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id)
     if request.user not in conversation.participants.all():
-        return redirect('conversation_list')
+        return redirect('messaging:conversation_list')
 
     if request.method == 'POST':
         text = request.POST.get('text')
@@ -51,7 +51,7 @@ def conversation_detail(request, conversation_id):
                     'sender': message.sender.username,
                     'timestamp': message.created_at.strftime('%I:%M %p')
                 })
-            return redirect('conversation_detail', conversation_id=conversation_id)
+            return redirect('messaging:conversation_detail', conversation_id=conversation_id)
 
     messages = conversation.messages.all().order_by('created_at')
     grouped_messages = {k: list(v) for k, v in groupby(messages, key=lambda m: m.created_at.date())}
@@ -78,9 +78,9 @@ def start_conversation(request, username):
         .filter(num_participants=2)
 
     if conversation.exists():
-        return redirect('conversation_detail', conversation_id=conversation.first().id)
+        return redirect('messaging:conversation_detail', conversation_id=conversation.first().id)
     else:
         # Create a new 1-on-1 conversation
         new_conversation = Conversation.objects.create()
         new_conversation.participants.add(request.user, other_user)
-        return redirect('conversation_detail', conversation_id=new_conversation.id)
+        return redirect('messaging:conversation_detail', conversation_id=new_conversation.id)

@@ -32,11 +32,11 @@ def start_session(request, group_id):
                     recipient=member,
                     notif_type='session_start',
                     message=f"{request.user.username} started a session '{session.title}' in {group.name}.",
-                    link=reverse('studySessions:session_detail', args=[session.id]),
+                    link=reverse('study_sessions:session_detail', args=[session.id]),
                     sender=request.user,
                 )
             
-            return redirect('studySessions:session_detail', session_id=session.id)
+            return redirect('study_sessions:session_detail', session_id=session.id)
     else:
         form = StudySessionForm()
     
@@ -77,14 +77,14 @@ def session_detail(request, session_id):
                     recipient=participant,
                     notif_type='new_post',
                     message=f"{request.user.username} posted in '{session.title}'.",
-                    link=reverse('studySessions:session_detail', args=[session.id]),
+                    link=reverse('study_sessions:session_detail', args=[session.id]),
                     sender=request.user,
                 )
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 avatar_url = request.user.profile.avatar.url if request.user.profile.avatar else f"https://ui-avatars.com/api/?name={request.user.username.replace(' ', '+')}&background=random"
                 return JsonResponse({'status': 'ok', 'content': post.content, 'author': post.author.username, 'avatar_url': avatar_url})
-            return redirect('studySessions:session_detail', session_id=session.id)
+            return redirect('study_sessions:session_detail', session_id=session.id)
 
     form = SessionPostForm()
     
@@ -130,8 +130,8 @@ def close_session(request, session_id):
                     'session_title': session.title,
                     'duration_minutes': session.duration_minutes,
                 })
-            return redirect('studySessions:session_detail', session_id=session.id)
-    return redirect('studySessions:session_detail', session_id=session.id)
+            return redirect('study_sessions:session_detail', session_id=session.id)
+    return redirect('study_sessions:session_detail', session_id=session.id)
 
 @login_required
 def session_history(request, group_id):
