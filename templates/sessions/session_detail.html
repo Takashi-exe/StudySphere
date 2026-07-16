@@ -63,7 +63,7 @@
                 focusTimerEl.innerHTML = "EXPIRED";
                 // Disable inputs and close session
                 document.getElementById('new-post-form').style.display = 'none';
-                fetch("{% url 'studySessions:close_session' session.id %}", {
+                fetch("{% url 'study_sessions:close_session' session.id %}", {
                     method: 'POST',
                     headers: { 'X-CSRFToken': '{{ csrf_token }}' }
                 });
@@ -87,7 +87,7 @@
             newPostForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const content = newPostForm.querySelector('textarea').value;
-                fetch("{% url 'studySessions:session_detail' session.id %}", {
+                fetch("{% url 'study_sessions:session_detail' session.id %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

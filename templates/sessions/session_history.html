@@ -20,7 +20,7 @@
                     <td class="p-2">{{ session.start_time|date:"Y-m-d" }}</td>
                     <td class="p-2">{{ session.duration_minutes }} min</td>
                     <td class="p-2">{{ session.posts.count }}</td>
-                    <td class="p-2"><a href="{% url 'studySessions:session_detail' session.id %}" class="text-blue-400 hover:underline">View</a></td>
+                    <td class="p-2"><a href="{% url 'study_sessions:session_detail' session.id %}" class="text-blue-400 hover:underline">View</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
