@@ -105,7 +105,7 @@ def api_user_search(request):
 
     user_list = User.objects.filter(
         Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)
-    ).exclude(username=request.user.username).exclude(is_superuser=True).select_related('profile').prefetch_related('study_groups')
+    ).exclude(username=request.user.username).exclude(is_superuser=True).select_related('profile').prefetch_related('study_groups').order_by('username')
 
     paginator = Paginator(user_list, 8) # 8 results per page
     page_obj = paginator.get_page(page_number)
@@ -272,7 +272,7 @@ def block_user(request, username):
 
 @login_required
 def notifications_view(request):
-    notifications = Notification.objects.filter(recipient=request.user)
+    notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
     paginator = Paginator(notifications, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

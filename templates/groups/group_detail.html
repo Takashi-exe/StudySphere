@@ -192,6 +192,61 @@
 </script>
 <script src="{% static 'js/voice_call.js' %}"></script>
 <script>
-    // Chat script from previous implementation
+    document.addEventListener('DOMContentLoaded', function () {
+        const userInviteSearch = document.getElementById('user-invite-search');
+        const userInviteResults = document.getElementById('user-invite-results');
+
+        if (userInviteSearch) {
+            userInviteSearch.addEventListener('keyup', function () {
+                const query = userInviteSearch.value;
+                if (query.length < 2) {
+                    userInviteResults.innerHTML = '';
+                    userInviteResults.classList.add('hidden');
+                    return;
+                }
+
+                fetch(`{% url 'accounts:api_user_search' %}?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        userInviteResults.innerHTML = '';
+                        if (data.users.length > 0) {
+                            data.users.forEach(user => {
+                                const userEl = document.createElement('div');
+                                userEl.classList.add('p-2', 'hover:bg-[#2D3449]', 'cursor-pointer');
+                                userEl.textContent = user.username;
+                                userEl.addEventListener('click', function () {
+                                    addUserToGroup(user.username);
+                                    userInviteSearch.value = '';
+                                    userInviteResults.classList.add('hidden');
+                                });
+                                userInviteResults.appendChild(userEl);
+                            });
+                            userInviteResults.classList.remove('hidden');
+                        } else {
+                            userInviteResults.classList.add('hidden');
+                        }
+                    });
+            });
+        }
+
+        function addUserToGroup(username) {
+            fetch(`{% url 'groups:add_member' group.id %}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `username=${username}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Or dynamically add the user to the member list
+                } else {
+                    alert(data.error || 'Failed to add user.');
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}

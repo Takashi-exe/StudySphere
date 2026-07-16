@@ -17,7 +17,7 @@ async function joinCall() {
         return;
     }
 
-    voiceSocket = new WebSocket(`ws://${window.location.host}/ws/voice/${groupId}/`);
+    voiceSocket = new WebSocket(`wss://${window.location.host}/ws/voice/${groupId}/`);
 
     voiceSocket.onmessage = async (event) => {
         const data = JSON.parse(event.data);
