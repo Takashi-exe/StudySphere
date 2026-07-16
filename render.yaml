@@ -23,6 +23,8 @@ services:
         value: ".onrender.com"
       - key: DEBUG
         value: "False"
+      - key: PYTHONPATH
+        value: "."
   - type: redis
     name: redis
     plan: free
