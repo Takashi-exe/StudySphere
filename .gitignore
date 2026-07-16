@@ -7,7 +7,7 @@ __pycache__/
 
 # Django
 *.log
-db.sqlite3
+BACKUP.db.sqlite3
 
 # Environment
 .env

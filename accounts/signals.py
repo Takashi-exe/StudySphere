@@ -4,10 +4,13 @@ from django.dispatch import receiver
 from .models import Profile
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    else:
+        # Ensure profile exists for existing users, create if not.
+        # This handles cases like the admin user created before the signal was in place.
+        profile, created = Profile.objects.get_or_create(user=instance)
+        if not created:
+            # If the profile already existed, save it to trigger any potential updates.
+            profile.save()
