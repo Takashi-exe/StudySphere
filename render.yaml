@@ -17,15 +17,19 @@ services:
           type: redis
           name: redis
           property: connectionString
+      - key: PYTHON_VERSION
+        value: "3.13"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DEBUG
+        value: "False"
+  - type: redis
+    name: redis
+    plan: free
+    ipAllowList: []
 
 databases:
   - name: studysphere-db
     databaseName: studysphere
     plan: free
     user: studysphere
-
-services:
-  - type: redis
-    name: redis
-    plan: free
-    ipAllowList: []
