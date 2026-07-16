@@ -7,7 +7,7 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fix merged requirements.txt line" />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fix merged notifications/__init__.py" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -147,7 +147,7 @@
       <workItem from="1784062370703" duration="8188000" />
       <workItem from="1784144085026" duration="6511000" />
       <workItem from="1784206552057" duration="3177000" />
-      <workItem from="1784209852159" duration="3480000" />
+      <workItem from="1784209852159" duration="3813000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -357,7 +357,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784213687105</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Fix merged notifications/__init__.py">
+      <option name="closed" value="true" />
+      <created>1784214056019</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1784214056019</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -372,6 +380,7 @@
     <MESSAGE value="Implemented flashcard game and call system" />
     <MESSAGE value="..." />
     <MESSAGE value="Fix merged requirements.txt line" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix merged requirements.txt line" />
+    <MESSAGE value="Fix merged notifications/__init__.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix merged notifications/__init__.py" />
   </component>
 </project>
