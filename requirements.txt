@@ -5,3 +5,5 @@ django-redis
 python-dotenv
 gunicorn
 Pillow
+dj-database-url
+whitenoise
