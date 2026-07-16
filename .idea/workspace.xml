@@ -7,7 +7,12 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="..." />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="...">
+      <change beforePath="$PROJECT_DIR$/sessions/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sessions/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sessions/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sessions/views.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -147,7 +152,7 @@
       <workItem from="1784062370703" duration="8188000" />
       <workItem from="1784144085026" duration="6511000" />
       <workItem from="1784206552057" duration="3177000" />
-      <workItem from="1784209852159" duration="1903000" />
+      <workItem from="1784209852159" duration="2329000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -325,7 +330,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784211465168</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="...">
+      <option name="closed" value="true" />
+      <created>1784212005953</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1784212005953</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
