@@ -24,7 +24,7 @@ services:
       - key: DEBUG
         value: "False"
       - key: PYTHONPATH
-        value: "."
+        value: "/opt/render/project/src"
   - type: redis
     name: redis
     plan: free
