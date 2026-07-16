@@ -41,14 +41,14 @@
         <div class="space-y-4">
             {% for friend in friends %}
             <div class="flex items-center justify-between">
-                <a href="{% url 'view_profile' username=friend.username %}" class="flex items-center gap-3">
+                <a href="{% url 'accounts:view_profile' username=friend.username %}" class="flex items-center gap-3">
                     <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username|urlencode }}&background=random{% endif %}" alt="{{ friend.username }}" class="w-10 h-10 rounded-full">
                     <div>
                         <div class="font-bold text-white">{{ friend.username }}</div>
                         <p class="text-xs text-[#958EA0]">Online</p>
                     </div>
                 </a>
-                <a href="{% url 'start_conversation' username=friend.username %}" class="p-2 rounded-full hover:bg-[#2D3449]/50">
+                <a href="{% url 'messaging:start_conversation' username=friend.username %}" class="p-2 rounded-full hover:bg-[#2D3449]/50">
                     <i data-lucide="message-circle" class="w-5 h-5 text-[#958EA0]"></i>
                 </a>
             </div>
@@ -56,7 +56,7 @@
             <p class="text-sm text-[#958EA0]">You haven't added any friends yet.</p>
             {% endfor %}
         </div>
-        <a href="{% url 'user_search' %}" class="mt-8 w-full text-center py-2 rounded-lg border border-[#2D3449]/30 text-sm font-semibold text-[#958EA0] hover:bg-[#2D3449]/50">+ Invite Friends</a>
+        <a href="{% url 'accounts:user_search' %}" class="mt-8 w-full text-center py-2 rounded-lg border border-[#2D3449]/30 text-sm font-semibold text-[#958EA0] hover:bg-[#2D3449]/50">+ Invite Friends</a>
     </aside>
 </div>
 

@@ -24,11 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.root_view, name='root'),
     path('accounts/', include('accounts.urls', namespace='accounts')),
-    path('messages/', include('messaging.urls')),
-    path('groups/', include('groups.urls')),
-    path('friends/', include('friends.urls')),
-    path('flashcards/', include('flashcards.urls')),
-    path('study-sessions/', include('studySessions.urls')),
+    path('messages/', include('messaging.urls', namespace='messaging')),
+    path('groups/', include('groups.urls', namespace='groups')),
+    path('friends/', include('friends.urls', namespace='friends')),
+    path('flashcards/', include('flashcards.urls', namespace='flashcards')),
+    path('study-sessions/', include('studySessions.urls', namespace='study_sessions')),
 ]
 
 if settings.DEBUG:
