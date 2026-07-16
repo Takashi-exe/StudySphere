@@ -6,4 +6,5 @@ python-dotenv
 gunicorn
 Pillow
 dj-database-url
-whitenoise
+daphne
+whitenoisedaphne==4.2.2
