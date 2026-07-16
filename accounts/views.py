@@ -21,7 +21,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            return redirect('login')
+            return redirect('accounts:login')
     else:
         form = RegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -85,7 +85,7 @@ def edit_profile_view(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('profile')
+            return redirect('accounts:profile')
     else:
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
@@ -156,11 +156,11 @@ def send_friend_request(request, to_user_username):
 
     if to_user == request.user:
         messages.error(request, "You cannot send a friend request to yourself.")
-        return redirect('view_profile', username=to_user_username)
+        return redirect('accounts:view_profile', username=to_user_username)
 
     if to_user in request.user.profile.blocked_users.all() or request.user in to_user.profile.blocked_users.all():
         messages.error(request, "Cannot send friend request to a blocked user.")
-        return redirect('view_profile', username=to_user_username)
+        return redirect('accounts:view_profile', username=to_user_username)
 
     pending_request = FriendRequest.objects.filter(sender=to_user, receiver=request.user, status='pending').first()
     if pending_request:
@@ -181,7 +181,7 @@ def send_friend_request(request, to_user_username):
             recipient=to_user,
             notif_type='friend_request',
             message=f"{request.user.username} sent you a friend request.",
-            link=reverse('view_profile', args=[request.user.username]),
+            link=reverse('accounts:view_profile', args=[request.user.username]),
             sender=request.user,
         )
     elif created:
@@ -190,13 +190,13 @@ def send_friend_request(request, to_user_username):
             recipient=to_user,
             notif_type='friend_request',
             message=f"{request.user.username} sent you a friend request.",
-            link=reverse('view_profile', args=[request.user.username]),
+            link=reverse('accounts:view_profile', args=[request.user.username]),
             sender=request.user,
         )
     else:
         messages.info(request, "Friend request already pending.")
 
-    return redirect('view_profile', username=to_user_username)
+    return redirect('accounts:view_profile', username=to_user_username)
 
 @login_required
 def accept_friend_request(request, from_user_username):
@@ -204,7 +204,7 @@ def accept_friend_request(request, from_user_username):
 
     if from_user == request.user:
         messages.error(request, "You cannot accept a friend request from yourself.")
-        return redirect('friend_requests_list')
+        return redirect('accounts:friend_requests_list')
 
     friend_request = get_object_or_404(FriendRequest, sender=from_user, receiver=request.user, status='pending')
     
@@ -220,12 +220,12 @@ def accept_friend_request(request, from_user_username):
         recipient=from_user,
         notif_type='friend_request',
         message=f"{request.user.username} accepted your friend request.",
-        link=reverse('view_profile', args=[request.user.username]),
+        link=reverse('accounts:view_profile', args=[request.user.username]),
         sender=request.user,
     )
     
     messages.success(request, f"You are now friends with {from_user.username}.")
-    return redirect('friend_requests_list')
+    return redirect('accounts:friend_requests_list')
 
 @login_required
 def reject_friend_request(request, from_user_username):
@@ -234,7 +234,7 @@ def reject_friend_request(request, from_user_username):
     friend_request.status = 'declined'
     friend_request.save()
     messages.info(request, "Friend request declined.")
-    return redirect('friend_requests_list')
+    return redirect('accounts:friend_requests_list')
 
 @login_required
 def unfriend_user(request, username):
@@ -248,7 +248,7 @@ def unfriend_user(request, username):
     ).update(status='declined')
     
     messages.info(request, f"You are no longer friends with {user_to_unfriend.username}.")
-    return redirect('view_profile', username=username)
+    return redirect('accounts:view_profile', username=username)
 
 @login_required
 def block_user(request, username):
@@ -256,7 +256,7 @@ def block_user(request, username):
 
     if user_to_block == request.user:
         messages.error(request, "You cannot block yourself.")
-        return redirect('view_profile', username=username)
+        return redirect('accounts:view_profile', username=username)
 
     request.user.profile.blocked_users.add(user_to_block)
     
@@ -268,7 +268,7 @@ def block_user(request, username):
     ).delete()
     
     messages.success(request, f"{user_to_block.username} has been blocked.")
-    return redirect('view_profile', username=username)
+    return redirect('accounts:view_profile', username=username)
 
 @login_required
 def notifications_view(request):
@@ -285,7 +285,7 @@ def notification_click(request, notif_id):
     notif.save()
     if notif.link:
         return redirect(notif.link)
-    return redirect('notifications')
+    return redirect('accounts:notifications')
 
 @login_required
 def notifications_unread_count(request):
