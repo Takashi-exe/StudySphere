@@ -7,10 +7,7 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fix merged notifications/__init__.py">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-    </list>
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Regenerate requirements.txt from working local environment" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -150,7 +147,7 @@
       <workItem from="1784062370703" duration="8188000" />
       <workItem from="1784144085026" duration="6511000" />
       <workItem from="1784206552057" duration="3177000" />
-      <workItem from="1784209852159" duration="5472000" />
+      <workItem from="1784209852159" duration="6257000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -376,7 +373,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784215210610</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Fix merged requirements.txt">
+      <option name="closed" value="true" />
+      <created>1784216580625</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1784216580625</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Regenerate requirements.txt from working local environment">
+      <option name="closed" value="true" />
+      <created>1784216748392</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1784216748392</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -392,6 +405,8 @@
     <MESSAGE value="..." />
     <MESSAGE value="Fix merged requirements.txt line" />
     <MESSAGE value="Fix merged notifications/__init__.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix merged notifications/__init__.py" />
+    <MESSAGE value="Fix merged requirements.txt" />
+    <MESSAGE value="Regenerate requirements.txt from working local environment" />
+    <option name="LAST_COMMIT_MESSAGE" value="Regenerate requirements.txt from working local environment" />
   </component>
 </project>
