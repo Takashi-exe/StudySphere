@@ -195,7 +195,71 @@
     document.addEventListener('DOMContentLoaded', function () {
         const userInviteSearch = document.getElementById('user-invite-search');
         const userInviteResults = document.getElementById('user-invite-results');
+        const chatLog = document.getElementById('chat-log');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-message-input');
 
+        // Scroll to bottom
+        chatLog.scrollTop = chatLog.scrollHeight;
+
+        // Group Chat WebSocket
+        const chatSocket = new WebSocket(
+            'wss://'
+            + window.location.host
+            + '/ws/group/'
+            + groupId
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const messageEl = document.createElement('div');
+            const isSender = data.sender === currentUser;
+
+            messageEl.classList.add('flex', 'items-start', 'gap-3');
+            if (isSender) {
+                messageEl.classList.add('flex-row-reverse');
+            }
+
+            let senderAvatar = '';
+            if (!isSender) {
+                senderAvatar = `<img src="https://ui-avatars.com/api/?name=${data.sender}&background=random" alt="${data.sender}" class="w-8 h-8 rounded-full">`;
+            }
+
+            const senderName = isSender ? '' : `<p class="text-sm font-semibold mb-1" style="color: hsl(${data.sender_id % 360}, 70%, 70%);">${data.sender}</p>`;
+            const messageBubbleClass = isSender ? 'bg-[#D0BCFF] text-[#0B1326]' : 'bg-[#222A3D] text-white';
+
+            messageEl.innerHTML = `
+                ${senderAvatar}
+                <div class="max-w-md">
+                    ${senderName}
+                    <div class="p-3 rounded-2xl ${messageBubbleClass}">
+                        <p class="text-sm">${data.message}</p>
+                    </div>
+                </div>
+                <p class="text-xs text-[#958EA0] mt-1 self-end">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            `;
+            chatLog.appendChild(messageEl);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Group chat socket closed unexpectedly');
+        };
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = chatInput.value;
+            if (message.trim()) {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                chatInput.value = '';
+            }
+        });
+
+
+        // User Invite Search
         if (userInviteSearch) {
             userInviteSearch.addEventListener('keyup', function () {
                 const query = userInviteSearch.value;
