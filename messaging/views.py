@@ -2,41 +2,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Conversation, Message
 from django.contrib.auth.models import User
-from django.db.models import Q, Max, Count
-from itertools import groupby
-from django.http import JsonResponse
-import logging
-
-logger = logging.getLogger(__name__)
+from django.db.models import Q, Max, Count, Prefetch
 
 def get_unique_conversations(user):
     """
     Helper function to get a deduplicated list of 1:1 conversations.
     """
-    conversations = user.conversations.annotate(
-        last_message_time=Max('messages__created_at'),
+    # Get conversations where the user is a participant and there are only 2 participants
+    conversations = Conversation.objects.filter(participants=user).annotate(
         num_participants=Count('participants')
-    ).filter(
-        num_participants=2
-    ).order_by('-last_message_time')
-
-    logger.warning(f"Found {conversations.count()} conversations for user {user.username}")
-
-    seen_users = set()
-    unique_conversations = []
-    for conv in conversations.prefetch_related('participants'):
-        other_users = [p for p in conv.participants.all() if p != user]
-        if not other_users:
-            logger.warning(f"Conversation {conv.id} has no other users.")
-            continue
-        other_user_id = other_users[0].id
-        if other_user_id not in seen_users:
-            seen_users.add(other_user_id)
-            conv.other_user = other_users[0]
-            unique_conversations.append(conv)
+    ).filter(num_participants=2).prefetch_related(
+        Prefetch('participants', queryset=User.objects.exclude(id=user.id))
+    ).order_by('-messages__created_at')
     
-    logger.warning(f"Returning {len(unique_conversations)} unique conversations.")
-    return unique_conversations
+    # The prefetch above ensures that conv.participants.all() will only contain the other user
+    for conv in conversations:
+        if conv.participants.all():
+            conv.other_user = conv.participants.all()[0]
+
+    return conversations
 
 @login_required
 def conversation_list(request):
@@ -53,6 +37,7 @@ def conversation_detail(request, conversation_id):
         text = request.POST.get('text')
         if text:
             message = Message.objects.create(conversation=conversation, sender=request.user, text=text)
+            # This part is for AJAX, which is no longer used, but we'll leave it for now
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({
                     'id': message.id,
@@ -63,14 +48,13 @@ def conversation_detail(request, conversation_id):
             return redirect('messaging:conversation_detail', conversation_id=conversation_id)
 
     messages = conversation.messages.all().order_by('created_at')
-    grouped_messages = {k: list(v) for k, v in groupby(messages, key=lambda m: m.created_at.date())}
-
-    # Get all conversations for the inbox panel, with deduplication
+    
+    # Get all conversations for the inbox panel
     unique_conversations = get_unique_conversations(request.user)
 
     context = {
         'conversation': conversation,
-        'grouped_messages': grouped_messages,
+        'messages': messages,
         'conversations': unique_conversations,
         'active_conversation_id': conversation.id
     }
@@ -81,10 +65,7 @@ def start_conversation(request, username):
     other_user = get_object_or_404(User, username=username)
     
     # Find existing 1-on-1 conversations
-    conversation = Conversation.objects.filter(participants=request.user)\
-        .filter(participants=other_user)\
-        .annotate(num_participants=Count('participants'))\
-        .filter(num_participants=2)
+    conversation = Conversation.objects.filter(participants=request.user).filter(participants=other_user).annotate(num_participants=Count('participants')).filter(num_participants=2)
 
     if conversation.exists():
         return redirect('messaging:conversation_detail', conversation_id=conversation.first().id)
