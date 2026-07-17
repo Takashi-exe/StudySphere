@@ -26,6 +26,7 @@ def get_unique_conversations(user):
         other_user_id = other_users[0].id
         if other_user_id not in seen_users:
             seen_users.add(other_user_id)
+            conv.other_user = other_users[0]
             unique_conversations.append(conv)
     return unique_conversations
 

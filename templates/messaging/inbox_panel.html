@@ -13,38 +13,30 @@
     </div>
     <div class="flex-grow overflow-y-auto" id="conversation-list-container">
         {% for conv in conversations %}
-            {% with other_user=conv.participants.all|slice:":1"|first %}
-                {% for p in conv.participants.all %}
-                    {% if p != request.user %}
-                        {% with other_user=p %}
-                        <a href="{% url 'messaging:conversation_detail' conv.id %}" class="block p-4 border-b border-[#2D3449]/20 hover:bg-[#222A3D] {% if active_conversation_id == conv.id %}bg-[#222A3D]{% endif %} conversation-item" data-username="{{ other_user.username }}">
-                            <div class="flex items-center">
-                                <div class="relative w-12 h-12 mr-4">
-                                    <img src="{% if other_user.profile.avatar %}{{ other_user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ other_user.username|urlencode }}&background=3C0091&color=FFFFFF{% endif %}" alt="{{ other_user.username }}" class="w-full h-full rounded-full">
-                                </div>
-                                <div class="flex-grow">
-                                    <div class="flex justify-between items-baseline">
-                                        <p class="font-bold {% if active_conversation_id == conv.id %}text-white{% endif %}">{{ other_user.username }}</p>
-                                        <p class="text-xs text-[#958EA0]">
-                                            {% if conv.messages.last.created_at %}
-                                                {{ conv.messages.last.created_at|date:"P" }}
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <p class="text-sm text-[#958EA0] truncate">
-                                        {% if conv.messages.last %}
-                                            {{ conv.messages.last.text }}
-                                        {% else %}
-                                            No messages yet.
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                        </a>
-                        {% endwith %}
-                    {% endif %}
-                {% endfor %}
-            {% endwith %}
+            <a href="{% url 'messaging:conversation_detail' conv.id %}" class="block p-4 border-b border-[#2D3449]/20 hover:bg-[#222A3D] {% if active_conversation_id == conv.id %}bg-[#222A3D]{% endif %} conversation-item" data-username="{{ conv.other_user.username }}">
+                <div class="flex items-center">
+                    <div class="relative w-12 h-12 mr-4">
+                        <img src="{% if conv.other_user.profile.avatar %}{{ conv.other_user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ conv.other_user.username|urlencode }}&background=3C0091&color=FFFFFF{% endif %}" alt="{{ conv.other_user.username }}" class="w-full h-full rounded-full">
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-baseline">
+                            <p class="font-bold {% if active_conversation_id == conv.id %}text-white{% endif %}">{{ conv.other_user.username }}</p>
+                            <p class="text-xs text-[#958EA0]">
+                                {% if conv.messages.last.created_at %}
+                                    {{ conv.messages.last.created_at|date:"P" }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <p class="text-sm text-[#958EA0] truncate">
+                            {% if conv.messages.last %}
+                                {{ conv.messages.last.text }}
+                            {% else %}
+                                No messages yet.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </a>
         {% empty %}
             <p class="p-4 text-[#958EA0]">No conversations yet.</p>
         {% endfor %}
