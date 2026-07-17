@@ -38,13 +38,15 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 import groups.routing
 import messaging.routing
+import studySessions.routing
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
             groups.routing.websocket_urlpatterns +
-            messaging.routing.websocket_urlpatterns
+            messaging.routing.websocket_urlpatterns +
+            studySessions.routing.websocket_urlpatterns
         )
     ),
 })

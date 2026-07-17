@@ -9,6 +9,28 @@ from django.db.models import Count
 from accounts.models import create_notification
 from django.urls import reverse
 from .summary import generate_session_summary
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import threading
+import time
+
+def broadcast_timer_updates():
+    while True:
+        for session in StudySession.objects.filter(is_active=True):
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'session_{session.id}',
+                {
+                    'type': 'timer_update',
+                    'remaining_seconds': session.remaining_seconds,
+                }
+            )
+        time.sleep(1)
+
+# Start the timer broadcast thread
+timer_thread = threading.Thread(target=broadcast_timer_updates)
+timer_thread.daemon = True
+timer_thread.start()
 
 @login_required
 def study_sessions_view(request):

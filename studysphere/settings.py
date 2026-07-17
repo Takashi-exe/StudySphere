@@ -149,14 +149,14 @@ if REDIS_URL:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [(REDIS_URL)],
+                "hosts": [(REDIS_URL + "?ssl_cert_reqs=none")],
             },
         },
     }
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL,
+            "LOCATION": REDIS_URL + "?ssl_cert_reqs=none",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }

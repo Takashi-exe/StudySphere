@@ -37,7 +37,7 @@
     <!-- Sidebar -->
     <div class="w-1/3 p-4 bg-gray-800">
         <h2 class="text-xl font-bold mb-4">Session Info</h2>
-        <div id="timer" data-endtime="{{ session.end_time.isoformat }}" class="text-4xl font-bold text-center mb-4"></div>
+        <div id="timer" class="text-4xl font-bold text-center mb-4"></div>
         <p>{{ session.description }}</p>
         <button id="focus-mode-btn" class="mt-4 bg-purple-500 text-white px-4 py-2 rounded w-full">Focus Mode</button>
     </div>
@@ -51,36 +51,41 @@
     document.addEventListener('DOMContentLoaded', function() {
         const timerEl = document.getElementById('timer');
         const focusTimerEl = document.getElementById('focus-timer');
-        const endTime = new Date(timerEl.dataset.endtime).getTime();
+        const sessionId = "{{ session.id }}";
+        let timerInterval;
 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const distance = endTime - now;
+        const timerSocket = new WebSocket(
+            'wss://'
+            + window.location.host
+            + '/ws/study_session/'
+            + sessionId
+            + '/'
+        );
 
-            if (distance < 0) {
+        timerSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (data.type === 'timer_update') {
+                updateTimer(data.remaining_seconds);
+            }
+        };
+
+        function updateTimer(remainingSeconds) {
+            if (remainingSeconds < 0) {
                 clearInterval(timerInterval);
                 timerEl.innerHTML = "EXPIRED";
                 focusTimerEl.innerHTML = "EXPIRED";
-                // Disable inputs and close session
                 document.getElementById('new-post-form').style.display = 'none';
-                fetch("{% url 'study_sessions:close_session' session.id %}", {
-                    method: 'POST',
-                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
-                });
                 return;
             }
 
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const hours = Math.floor(remainingSeconds / 3600);
+            const minutes = Math.floor((remainingSeconds % 3600) / 60);
+            const seconds = Math.floor(remainingSeconds % 60);
 
             const timerString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timerEl.innerHTML = timerString;
             focusTimerEl.innerHTML = timerString;
         }
-
-        const timerInterval = setInterval(updateTimer, 1000);
-        updateTimer();
 
         const newPostForm = document.getElementById('new-post-form');
         if (newPostForm) {

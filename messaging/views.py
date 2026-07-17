@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.db.models import Q, Max, Count
 from itertools import groupby
 from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_unique_conversations(user):
     """
@@ -17,17 +20,22 @@ def get_unique_conversations(user):
         num_participants=2
     ).order_by('-last_message_time')
 
+    logger.warning(f"Found {conversations.count()} conversations for user {user.username}")
+
     seen_users = set()
     unique_conversations = []
     for conv in conversations.prefetch_related('participants'):
         other_users = [p for p in conv.participants.all() if p != user]
         if not other_users:
+            logger.warning(f"Conversation {conv.id} has no other users.")
             continue
         other_user_id = other_users[0].id
         if other_user_id not in seen_users:
             seen_users.add(other_user_id)
             conv.other_user = other_users[0]
             unique_conversations.append(conv)
+    
+    logger.warning(f"Returning {len(unique_conversations)} unique conversations.")
     return unique_conversations
 
 @login_required
