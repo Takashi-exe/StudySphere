@@ -1,7 +1,7 @@
 Django~=4.2
-channels
-channels-redis
-django-redis
+channels==4.0.0
+channels-redis==4.2.0
+django-redis==5.4.0
 python-dotenv
 gunicorn
 Pillow
