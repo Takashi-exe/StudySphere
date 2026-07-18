@@ -9,7 +9,7 @@
         <!-- Profile Hero Card -->
         <div class="bg-[#222A3D] rounded-xl p-8 flex items-center gap-8">
             <div class="flex-shrink-0">
-                <img src="{% if profile_user.profile.avatar %}{{ profile_user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ profile_user.username|urlencode }}&size=180&background=random{% endif %}" alt="Avatar" class="w-44 h-44 rounded-full border-4 border-[#D0BCFF]/50">
+                <img src="{% if profile_user.profile.avatar_url %}{{ profile_user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ profile_user.username|urlencode }}&size=180&background=random{% endif %}" alt="Avatar" class="w-44 h-44 rounded-full border-4 border-[#D0BCFF]/50">
             </div>
             <div class="flex-grow">
                 <h1 class="text-3xl font-bold text-white">{{ profile_user.first_name }} {{ profile_user.last_name|default:profile_user.username }}</h1>
@@ -99,7 +99,7 @@
                     <div class="flex items-center justify-between mt-4">
                         <div class="flex -space-x-2">
                             {% for member in group.members.all|slice:":3" %}
-                            <img src="{% if member.profile.avatar %}{{ member.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ member.username|urlencode }}&background=random&size=24{% endif %}" class="w-6 h-6 rounded-full border-2 border-[#222A3D]">
+                            <img src="{% if member.profile.avatar_url %}{{ member.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ member.username|urlencode }}&background=random&size=24{% endif %}" class="w-6 h-6 rounded-full border-2 border-[#222A3D]">
                             {% endfor %}
                             {% if group.members.count > 3 %}
                             <div class="w-6 h-6 rounded-full bg-[#2D3449] flex items-center justify-center text-xs font-semibold border-2 border-[#222A3D]">+{{ group.members.count|add:"-3" }}</div>

@@ -20,6 +20,13 @@ class StudyGroup(models.Model):
     def get_absolute_url(self):
         return reverse('groups:group_detail', kwargs={'group_id': self.id})
 
+    @property
+    def cover_image_url(self):
+        try:
+            return self.cover_image.url if self.cover_image else None
+        except Exception:
+            return None
+
 class GroupMembership(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

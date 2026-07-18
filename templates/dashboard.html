@@ -22,7 +22,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for group in groups %}
             <div class="rounded-xl p-4 bg-[#1E293B]/70">
-                <div class="relative h-32 rounded-lg mb-4 bg-cover bg-center" style="background-image: url('{% if group.cover_image %}{{ group.cover_image.url }}{% else %}https://placehold.co/600x400/1E293B/FFFFFF?text=No+Image{% endif %}');">
+                <div class="relative h-32 rounded-lg mb-4 bg-cover bg-center" style="background-image: url('{% if group.cover_image_url %}{{ group.cover_image_url }}{% else %}https://placehold.co/600x400/1E293B/FFFFFF?text=No+Image{% endif %}');">
                     <!-- Placeholder for status pill -->
                 </div>
                 <h3 class="font-bold mb-1 text-white">{{ group.name }}</h3>
@@ -42,7 +42,7 @@
             {% for friend in friends %}
             <div class="flex items-center justify-between">
                 <a href="{% url 'accounts:view_profile' username=friend.username %}" class="flex items-center gap-3">
-                    <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username|urlencode }}&background=random{% endif %}" alt="{{ friend.username }}" class="w-10 h-10 rounded-full">
+                    <img src="{% if friend.profile.avatar_url %}{{ friend.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username|urlencode }}&background=random{% endif %}" alt="{{ friend.username }}" class="w-10 h-10 rounded-full">
                     <div>
                         <div class="font-bold text-white">{{ friend.username }}</div>
                         <p class="text-xs text-[#958EA0]">Online</p>

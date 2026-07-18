@@ -13,6 +13,13 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+    @property
+    def avatar_url(self):
+        try:
+            return self.avatar.url if self.avatar else None
+        except Exception:
+            return None
+
 class FriendRequest(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),

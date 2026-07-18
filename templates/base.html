@@ -17,7 +17,7 @@
 
             {% if user.is_authenticated %}
             <div class="flex items-center mb-8">
-                <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=random{% endif %}" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+                <img src="{% if user.profile.avatar_url %}{{ user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ user.username|urlencode }}&background=random{% endif %}" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
                 <div>
                     <div class="font-bold">{{ user.profile.get_full_name|default:user.username }}</div>
                     <a href="{% url 'accounts:profile' %}" class="text-xs tracking-widest uppercase text-[#958EA0]">View Profile</a>
