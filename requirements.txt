@@ -10,3 +10,5 @@ whitenoise==6.7.0
 psycopg[binary]==3.3.4
 uvicorn[standard]==0.34.0
 daphne==4.2.2
+django-storages
+boto3
