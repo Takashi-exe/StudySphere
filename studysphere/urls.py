@@ -33,3 +33,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'studysphere.views.custom_404'
+handler403 = 'studysphere.views.custom_403'
+handler500 = 'studysphere.views.custom_500'
+handler400 = 'studysphere.views.custom_400'

@@ -25,6 +25,8 @@ services:
         value: "False"
       - key: PYTHONPATH
         value: "/opt/render/project/src"
+      - key: MAINTENANCE_MODE
+        value: "False"
   - type: redis
     name: redis
     plan: free
