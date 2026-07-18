@@ -107,18 +107,40 @@
     }
 </style>
 <script>
-    document.getElementById('add-card-btn').addEventListener('click', () => {
-        const formset = document.getElementById('card-formset');
-        const totalForms = document.getElementById('id_cards-TOTAL_FORMS');
-        const formIndex = parseInt(totalForms.value);
+    document.addEventListener('DOMContentLoaded', function() {
+        const formsetContainer = document.getElementById('card-formset');
 
-        const template = document.getElementById('empty-form-template').innerHTML.replace(/__prefix__/g, formIndex).replace(/__prefix_num__/g, formIndex + 1);
-        const newForm = document.createElement('div');
-        newForm.innerHTML = template;
+        // Add card functionality
+        document.getElementById('add-card-btn').addEventListener('click', () => {
+            const totalForms = document.getElementById('id_cards-TOTAL_FORMS');
+            const formIndex = parseInt(totalForms.value);
 
-        formset.appendChild(newForm.firstElementChild);
-        totalForms.value = formIndex + 1;
-        lucide.createIcons();
+            const template = document.getElementById('empty-form-template').innerHTML
+                .replace(/__prefix__/g, formIndex)
+                .replace(/__prefix_num__/g, formIndex + 1);
+
+            const newForm = document.createElement('div');
+            newForm.innerHTML = template;
+
+            formsetContainer.appendChild(newForm.firstElementChild);
+            totalForms.value = formIndex + 1;
+            lucide.createIcons();
+        });
+
+        // Delete card feedback functionality
+        formsetContainer.addEventListener('change', function(e) {
+            if (e.target.matches('input[type="checkbox"][name$="-DELETE"]')) {
+                const cardForm = e.target.closest('.card-form');
+                if (e.target.checked) {
+                    cardForm.classList.add('opacity-40', 'pointer-events-none');
+                    cardForm.querySelector('label[for="' + e.target.id + '"]').innerHTML = '<i data-lucide="rotate-ccw" class="w-5 h-5"></i>';
+                } else {
+                    cardForm.classList.remove('opacity-40', 'pointer-events-none');
+                    cardForm.querySelector('label[for="' + e.target.id + '"]').innerHTML = '<i data-lucide="trash-2" class="w-5 h-5"></i>';
+                }
+                lucide.createIcons();
+            }
+        });
     });
 </script>
 {% endblock %}

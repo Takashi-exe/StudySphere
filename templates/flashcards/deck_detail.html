@@ -5,23 +5,26 @@
 
 {% block content %}
 <div class="p-8 bg-[#171F33] min-h-full">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
         <div class="mb-8">
             <a href="{% url 'flashcards:deck_list' deck.group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 Back to Decks
             </a>
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center mt-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-white">{{ deck.title }}</h1>
-                    <p class="text-[#958EA0]">{{ deck.cards.count }} cards</p>
+                    <h1 class="text-4xl font-bold text-white">{{ deck.title }}</h1>
+                    <div class="flex items-center gap-2 mt-2 text-[#958EA0]">
+                        <i data-lucide="layers" class="w-4 h-4"></i>
+                        <span>{{ deck.cards.count }} card{{ deck.cards.count|pluralize }}</span>
+                    </div>
                 </div>
-                <div>
-                    <a href="{% url 'flashcards:edit_deck' deck.group.id deck.id %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#2D3449] text-white hover:bg-[#494454] flex items-center gap-2">
+                <div class="flex items-center gap-3">
+                    <a href="{% url 'flashcards:edit_deck' deck.group.id deck.id %}" class="px-4 py-2 rounded-lg text-sm font-semibold border border-[#2D3449]/50 text-[#958EA0] hover:bg-[#2D3449] flex items-center gap-2">
                         <i data-lucide="pencil" class="w-4 h-4"></i>
                         Edit
                     </a>
-                    <a href="{% url 'flashcards:play_deck' deck.group.id deck.id %}" class="px-6 py-3 rounded-lg text-lg font-semibold bg-[#D0BCFF] text-[#0B1326] flex items-center gap-2">
+                    <a href="{% url 'flashcards:play_deck' deck.group.id deck.id %}" class="px-6 py-3 rounded-lg text-lg font-semibold bg-[#D0BCFF] text-[#0B1326] flex items-center gap-2 hover:bg-opacity-90">
                         <i data-lucide="play" class="w-5 h-5"></i>
                         Study
                     </a>
@@ -29,14 +32,43 @@
             </div>
         </div>
 
-        <div class="bg-[#222A3D] rounded-lg divide-y divide-[#2D3449]/50">
-            {% for card in deck.cards.all %}
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <p class="text-white">{{ card.front }}</p>
-                <p class="text-[#958EA0]">{{ card.back }}</p>
+        {% if deck.cards.all %}
+            <div class="bg-[#222A3D] rounded-2xl border border-[#2D3449]/30">
+                <div class="p-6 grid grid-cols-[auto,1fr,1fr] gap-x-6 text-sm font-bold text-[#958EA0] border-b border-[#2D3449]/30">
+                    <span class="text-center">#</span>
+                    <span>FRONT</span>
+                    <span>BACK</span>
+                </div>
+                <div class="divide-y divide-[#2D3449]/30">
+                    {% for card in deck.cards.all %}
+                    <div class="p-6 grid grid-cols-[auto,1fr,1fr] gap-x-6 items-center hover:bg-[#2D3449]/30">
+                        <span class="text-center text-[#958EA0]">{{ forloop.counter }}</span>
+                        <p class="text-white">{{ card.front }}</p>
+                        <p class="text-[#958EA0]">{{ card.back }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
-        </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-24 bg-[#222A3D] rounded-2xl border border-dashed border-[#2D3449]/50">
+                <i data-lucide="layers" class="w-16 h-16 mx-auto mb-4 text-[#494454]"></i>
+                <h2 class="text-2xl font-bold text-white">No cards in this deck yet.</h2>
+                <p class="mt-2 text-lg text-[#958EA0]">Add some cards to start studying.</p>
+                <div class="mt-8">
+                    <a href="{% url 'flashcards:edit_deck' deck.group.id deck.id %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                        Add Cards
+                    </a>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    lucide.createIcons();
+</script>
 {% endblock %}

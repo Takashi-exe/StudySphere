@@ -7,14 +7,12 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Redesigned the friends and group pages">
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Redesigned the flashcard pages">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flashcards/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/flashcards/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flashcards/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/flashcards/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/studysphere/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/studysphere/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/flashcards/deck_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/flashcards/deck_detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/flashcards/deck_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/flashcards/deck_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/flashcards/deck_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/flashcards/deck_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/flashcards/play.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/flashcards/play.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,22 +157,6 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-    </task>
-    <task id="LOCAL-00004" summary="Started working on group chats">
-      <option name="closed" value="true" />
-      <created>1781791542718</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1781791542719</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Started working on group chats">
-      <option name="closed" value="true" />
-      <created>1782256787724</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1782256787724</updated>
     </task>
     <task id="LOCAL-00006" summary="Started working on group chats">
       <option name="closed" value="true" />
@@ -552,7 +534,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784397961174</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Redesigned the flashcard pages">
+      <option name="closed" value="true" />
+      <created>1784398959439</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1784398959439</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Redesigned the flashcard pages">
+      <option name="closed" value="true" />
+      <created>1784399315407</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1784399315408</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -573,6 +571,7 @@
     <MESSAGE value="fixed namespace errors" />
     <MESSAGE value="..." />
     <MESSAGE value="Redesigned the friends and group pages" />
-    <option name="LAST_COMMIT_MESSAGE" value="Redesigned the friends and group pages" />
+    <MESSAGE value="Redesigned the flashcard pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="Redesigned the flashcard pages" />
   </component>
 </project>
