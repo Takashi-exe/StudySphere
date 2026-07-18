@@ -16,7 +16,7 @@ services:
         fromService:
           type: redis
           name: redis
-          property: connectionString
+          property: redissConnectionString
       - key: PYTHON_VERSION
         value: "3.13"
       - key: ALLOWED_HOSTS

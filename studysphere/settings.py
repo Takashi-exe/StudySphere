@@ -151,6 +151,14 @@ if REDIS_URL:
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
                 "hosts": [REDIS_URL],
+                "channel_capacity": {
+                    "http.request": 200,
+                    "http.response!*": 10,
+                    "websocket.connect": 20,
+                    "websocket.receive": 100,
+                    "websocket.disconnect": 20,
+                },
+                 "ssl_cert_reqs": None,
             },
         },
     }
