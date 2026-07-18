@@ -7,7 +7,7 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Redesigned the flashcard pages" />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Edited the group detail page" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -151,22 +151,6 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-    </task>
-    <task id="LOCAL-00008" summary="Started working on group chats">
-      <option name="closed" value="true" />
-      <created>1782391772764</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1782391772765</updated>
-    </task>
-    <task id="LOCAL-00009" summary="UI Overhaul">
-      <option name="closed" value="true" />
-      <created>1782465619438</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1782465619438</updated>
     </task>
     <task id="LOCAL-00010" summary="UI Overhaul">
       <option name="closed" value="true" />
@@ -544,7 +528,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784400437507</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="Redesigned the flashcard pages">
+      <option name="closed" value="true" />
+      <created>1784400671973</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1784400671973</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Edited the group detail page">
+      <option name="closed" value="true" />
+      <created>1784401200980</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1784401200980</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -566,6 +566,7 @@
     <MESSAGE value="..." />
     <MESSAGE value="Redesigned the friends and group pages" />
     <MESSAGE value="Redesigned the flashcard pages" />
-    <option name="LAST_COMMIT_MESSAGE" value="Redesigned the flashcard pages" />
+    <MESSAGE value="Edited the group detail page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edited the group detail page" />
   </component>
 </project>
