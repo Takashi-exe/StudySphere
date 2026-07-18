@@ -30,6 +30,20 @@ class StudySession(models.Model):
     def __str__(self):
         return self.title
 
+class SessionResource(models.Model):
+    RESOURCE_TYPES = (('file', 'File'), ('link', 'Link'))
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    session = models.ForeignKey(StudySession, on_delete=models.CASCADE, related_name='resources')
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    resource_type = models.CharField(max_length=4, choices=RESOURCE_TYPES, default='file')
+    file = models.FileField(upload_to='session_resources/', blank=True, null=True)
+    link_url = models.URLField(blank=True)
+    title = models.CharField(max_length=200, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-uploaded_at']
+
 class SessionPost(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     session = models.ForeignKey(StudySession, on_delete=models.CASCADE, related_name='posts')

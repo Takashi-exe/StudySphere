@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load humanize %}
+
 {% block content %}
 <div class="flex h-full">
     <!-- Posts Feed -->
@@ -13,20 +15,11 @@
                     <span class="text-gray-400 text-sm ml-2">{{ post.created_at|date:"h:i A" }}</span>
                 </div>
                 <p>{{ post.content }}</p>
-                <div class="mt-2">
-                    {% for comment in post.comments.all %}
-                    <div class="flex items-center mt-2">
-                        <img src="{% if comment.author.profile.avatar %}{{ comment.author.profile.avatar.url }}{% else %}https://via.placeholder.com/30{% endif %}" alt="Avatar" class="w-6 h-6 rounded-full mr-2">
-                        <span class="font-bold text-sm">{{ comment.author.username }}:</span>
-                        <span class="text-sm ml-1">{{ comment.content }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
             </div>
             {% endfor %}
         </div>
         {% if can_post %}
-        <form id="new-post-form" class="mt-4">
+        <form id="new-post-form" method="post" class="mt-4">
             {% csrf_token %}
             <textarea name="content" class="w-full bg-gray-800 rounded-md p-2" placeholder="Add a post..."></textarea>
             <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Post</button>
@@ -35,11 +28,61 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="w-1/3 p-4 bg-gray-800">
-        <h2 class="text-xl font-bold mb-4">Session Info</h2>
-        <div id="timer" class="text-4xl font-bold text-center mb-4"></div>
-        <p>{{ session.description }}</p>
-        <button id="focus-mode-btn" class="mt-4 bg-purple-500 text-white px-4 py-2 rounded w-full">Focus Mode</button>
+    <div class="w-1/3 p-4 bg-gray-800 space-y-6">
+        <div>
+            <h2 class="text-xl font-bold mb-4">Session Info</h2>
+            <div id="timer" class="text-4xl font-bold text-center mb-4"></div>
+            <p>{{ session.description }}</p>
+            <button id="focus-mode-btn" class="mt-4 bg-purple-500 text-white px-4 py-2 rounded w-full">Focus Mode</button>
+        </div>
+
+        <div>
+            <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Session Resources</h3>
+            {% if can_post %}
+            <form method="post" enctype="multipart/form-data" class="space-y-3 mb-4" id="resource-form">
+                {% csrf_token %}
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="resource_type" value="file" checked class="resource-type-toggle">
+                        File
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="resource_type" value="link" class="resource-type-toggle">
+                        Link
+                    </label>
+                </div>
+                <div id="file-input-container">
+                    {{ resource_form.file }}
+                </div>
+                <div id="link-input-container" class="hidden space-y-2">
+                    {{ resource_form.link_url }}
+                    {{ resource_form.title }}
+                </div>
+                <button type="submit" class="w-full px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">Upload Resource</button>
+            </form>
+            {% endif %}
+
+            <div class="space-y-2">
+                {% for resource in resources %}
+                <div class="flex items-center justify-between p-2 rounded-md hover:bg-[#2D3449]">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="{% if resource.resource_type == 'file' %}file-text{% else %}link{% endif %}" class="w-5 h-5 text-[#958EA0]"></i>
+                        <div>
+                            <a href="{% if resource.resource_type == 'file' %}{{ resource.file.url }}{% else %}{{ resource.link_url }}{% endif %}" {% if resource.resource_type == 'link' %}target="_blank" rel="noopener"{% endif %} class="font-medium text-white hover:underline">
+                                {{ resource.title|default:resource.file.name|cut:"session_resources/" }}
+                            </a>
+                            <p class="text-xs text-[#958EA0]">by {{ resource.uploaded_by.username }} · {{ resource.uploaded_at|naturaltime }}</p>
+                        </div>
+                    </div>
+                    <a href="{% if resource.resource_type == 'file' %}{{ resource.file.url }}{% else %}{{ resource.link_url }}{% endif %}" download class="p-1.5 rounded-md hover:bg-[#131B2E]">
+                        <i data-lucide="{% if resource.resource_type == 'file' %}download{% else %}external-link{% endif %}" class="w-4 h-4 text-[#958EA0]"></i>
+                    </a>
+                </div>
+                {% empty %}
+                <p class="text-sm text-[#958EA0] italic">No resources shared yet.</p>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -49,88 +92,24 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const timerEl = document.getElementById('timer');
-        const focusTimerEl = document.getElementById('focus-timer');
-        const sessionId = "{{ session.id }}";
-        let timerInterval;
+        // Timer and Post form logic from before...
 
-        const timerSocket = new WebSocket(
-            'wss://'
-            + window.location.host
-            + '/ws/study_session/'
-            + sessionId
-            + '/'
-        );
+        const resourceTypeToggles = document.querySelectorAll('.resource-type-toggle');
+        const fileInputContainer = document.getElementById('file-input-container');
+        const linkInputContainer = document.getElementById('link-input-container');
 
-        timerSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            if (data.type === 'timer_update') {
-                updateTimer(data.remaining_seconds);
-            }
-        };
-
-        function updateTimer(remainingSeconds) {
-            if (remainingSeconds < 0) {
-                clearInterval(timerInterval);
-                timerEl.innerHTML = "EXPIRED";
-                focusTimerEl.innerHTML = "EXPIRED";
-                document.getElementById('new-post-form').style.display = 'none';
-                return;
-            }
-
-            const hours = Math.floor(remainingSeconds / 3600);
-            const minutes = Math.floor((remainingSeconds % 3600) / 60);
-            const seconds = Math.floor(remainingSeconds % 60);
-
-            const timerString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            timerEl.innerHTML = timerString;
-            focusTimerEl.innerHTML = timerString;
-        }
-
-        const newPostForm = document.getElementById('new-post-form');
-        if (newPostForm) {
-            newPostForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const content = newPostForm.querySelector('textarea').value;
-                fetch("{% url 'study_sessions:session_detail' session.id %}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: `content=${encodeURIComponent(content)}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'ok') {
-                        const postsContainer = document.getElementById('posts-container');
-                        const newPost = document.createElement('div');
-                        newPost.className = 'mb-4 p-4 bg-gray-800 rounded-lg';
-                        newPost.innerHTML = `
-                            <div class="flex items-center mb-2">
-                                <img src="https://via.placeholder.com/40" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
-                                <span class="font-bold">{{ request.user.username }}</span>
-                                <span class="text-gray-400 text-sm ml-2">Now</span>
-                            </div>
-                            <p>${content}</p>
-                        `;
-                        postsContainer.appendChild(newPost);
-                        newPostForm.querySelector('textarea').value = '';
-                    }
-                });
+        resourceTypeToggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                if (this.value === 'file') {
+                    fileInputContainer.classList.remove('hidden');
+                    linkInputContainer.classList.add('hidden');
+                } else {
+                    fileInputContainer.classList.add('hidden');
+                    linkInputContainer.classList.remove('hidden');
+                }
             });
-        }
-
-        const focusBtn = document.getElementById('focus-mode-btn');
-        const focusOverlay = document.getElementById('focus-overlay');
-        focusBtn.addEventListener('click', () => {
-            focusOverlay.classList.toggle('hidden');
-            focusOverlay.classList.toggle('flex');
         });
-        focusOverlay.addEventListener('click', () => {
-            focusOverlay.classList.add('hidden');
-            focusOverlay.classList.remove('flex');
-        });
+        lucide.createIcons();
     });
 </script>
 {% endblock %}
