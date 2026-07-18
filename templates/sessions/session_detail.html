@@ -29,16 +29,32 @@
 
     <!-- Sidebar -->
     <div class="w-1/3 p-4 bg-gray-800 space-y-6">
+        {% if session.is_active %}
         <div>
-            <h2 class="text-xl font-bold mb-4">Session Info</h2>
+            <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Live Session</h3>
             <div id="timer" class="text-4xl font-bold text-center mb-4"></div>
             <p>{{ session.description }}</p>
             <button id="focus-mode-btn" class="mt-4 bg-purple-500 text-white px-4 py-2 rounded w-full">Focus Mode</button>
         </div>
+        {% else %}
+        <div>
+            <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Session Summary</h3>
+            <div class="bg-[#222A3D] p-4 rounded-lg">
+                <p>Total Duration: {{ session.duration_minutes }} minutes</p>
+                <p>Total Notes: {{ session.posts.count }}</p>
+                <p>Top Contributors:</p>
+                <ul>
+                    {% for contributor in contributors %}
+                    <li>{{ contributor.author__username }}: {{ contributor.message_count }} posts</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
 
         <div>
             <h3 class="text-sm font-semibold uppercase text-[#958EA0] mb-4">Session Resources</h3>
-            {% if can_post %}
+            {% if session.is_active and can_post %}
             <form method="post" enctype="multipart/form-data" class="space-y-3 mb-4" id="resource-form">
                 {% csrf_token %}
                 <div class="flex items-center gap-4">
@@ -98,17 +114,19 @@
         const fileInputContainer = document.getElementById('file-input-container');
         const linkInputContainer = document.getElementById('link-input-container');
 
-        resourceTypeToggles.forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                if (this.value === 'file') {
-                    fileInputContainer.classList.remove('hidden');
-                    linkInputContainer.classList.add('hidden');
-                } else {
-                    fileInputContainer.classList.add('hidden');
-                    linkInputContainer.classList.remove('hidden');
-                }
+        if (resourceTypeToggles.length > 0) {
+            resourceTypeToggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    if (this.value === 'file') {
+                        fileInputContainer.classList.remove('hidden');
+                        linkInputContainer.classList.add('hidden');
+                    } else {
+                        fileInputContainer.classList.add('hidden');
+                        linkInputContainer.classList.remove('hidden');
+                    }
+                });
             });
-        });
+        }
         lucide.createIcons();
     });
 </script>
