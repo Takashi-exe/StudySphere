@@ -10,5 +10,3 @@ python manage.py collectstatic --no-input
 python manage.py makemigrations --check --dry-run
 
 python manage.py migrate
-#python manage.py collectstatic --no-input
-#python manage.py migrate

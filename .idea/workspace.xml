@@ -7,8 +7,7 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Dixed redis error">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="updated build.sh file">
       <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -154,14 +153,6 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-    </task>
-    <task id="LOCAL-00011" summary="UI Overhaul">
-      <option name="closed" value="true" />
-      <created>1782688073976</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1782688073976</updated>
     </task>
     <task id="LOCAL-00012" summary="UI Overhaul">
       <option name="closed" value="true" />
@@ -547,7 +538,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784401535289</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="updated build.sh file">
+      <option name="closed" value="true" />
+      <created>1784401911383</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1784401911383</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -571,6 +570,7 @@
     <MESSAGE value="Redesigned the flashcard pages" />
     <MESSAGE value="Edited the group detail page" />
     <MESSAGE value="Dixed redis error" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dixed redis error" />
+    <MESSAGE value="updated build.sh file" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated build.sh file" />
   </component>
 </project>
