@@ -52,6 +52,7 @@ def group_detail(request, group_id):
     active_session = group_with_active_session.active_sessions_list[0] if group_with_active_session.active_sessions_list else None
 
     past_group_sessions = StudySession.objects.filter(group=group, is_active=False).order_by('-start_time')[:2]
+    recent_resources = GroupResource.objects.filter(group=group).select_related('uploaded_by').order_by('-uploaded_at')[:3]
     
     memberships = GroupMembership.objects.filter(group=group).select_related('user', 'user__profile').order_by('joined_at')
     user_membership = memberships.filter(user=request.user).first()
@@ -64,6 +65,7 @@ def group_detail(request, group_id):
         'group': group,
         'chat_messages': group.chat_messages.all().select_related('user__profile'),
         'past_sessions': past_group_sessions,
+        'recent_resources': recent_resources,
         'active_session': active_session,
         'has_active_session': active_session is not None,
         'is_member': is_member,
@@ -72,6 +74,52 @@ def group_detail(request, group_id):
         'memberships': memberships,
     }
     return render(request, 'groups/group_detail.html', context)
+
+@login_required
+def resource_list(request, group_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    is_member = GroupMembership.objects.filter(group=group, user=request.user).exists()
+
+    if request.method == 'POST':
+        if not is_member:
+            return HttpResponseForbidden("You must be a member to upload resources.")
+        form = GroupResourceForm(request.POST, request.FILES)
+        if form.is_valid():
+            resource = form.save(commit=False)
+            resource.group = group
+            resource.uploaded_by = request.user
+            resource.save()
+            messages.success(request, 'Resource uploaded successfully.')
+            return redirect('groups:resource_list', group_id=group.id)
+    else:
+        form = GroupResourceForm()
+
+    resources = GroupResource.objects.filter(group=group).select_related('uploaded_by').order_by('-uploaded_at')
+    context = {
+        'group': group,
+        'resources': resources,
+        'form': form,
+        'is_member': is_member,
+    }
+    return render(request, 'groups/resource_list.html', context)
+
+@login_required
+def member_list(request, group_id):
+    group = get_object_or_404(StudyGroup, id=group_id)
+    memberships = GroupMembership.objects.filter(group=group).select_related('user', 'user__profile').order_by('joined_at')
+    user_membership = memberships.filter(user=request.user).first()
+    
+    is_member = user_membership is not None
+    is_admin = is_member and user_membership.role == 'admin'
+    is_moderator = is_member and user_membership.role == 'moderator'
+
+    context = {
+        'group': group,
+        'memberships': memberships,
+        'is_admin': is_admin,
+        'is_moderator': is_moderator,
+    }
+    return render(request, 'groups/member_list.html', context)
 
 @require_POST
 @login_required

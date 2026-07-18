@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Shared Resources for {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-5xl mx-auto">
+        <div class="mb-8">
+            <a href="{% url 'groups:group_detail' group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Back to {{ group.name }}
+            </a>
+            <h1 class="text-3xl font-bold text-white">Shared Resources</h1>
+        </div>
+
+        {% if is_member %}
+        <div class="bg-[#222A3D] p-6 rounded-2xl border border-[#2D3449]/50 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">Upload a New Resource</h2>
+            <form method="post" enctype="multipart/form-data" class="flex items-center gap-4">
+                {% csrf_token %}
+                <div class="flex-grow">
+                    {{ form.file }}
+                </div>
+                <button type="submit" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">Upload</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="bg-[#222A3D] rounded-2xl border border-[#2D3449]/30">
+            {% if resources %}
+                <div class="divide-y divide-[#2D3449]/30">
+                    {% for resource in resources %}
+                    <div class="p-6 flex items-center justify-between hover:bg-[#2D3449]/30">
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="file-text" class="w-8 h-8 text-[#958EA0]"></i>
+                            <div>
+                                <a href="{{ resource.file.url }}" class="font-semibold text-white hover:underline">{{ resource.file.name|cut:"resources/" }}</a>
+                                <p class="text-sm text-[#958EA0]">Uploaded by {{ resource.uploaded_by.username }} · {{ resource.uploaded_at|naturaltime }}</p>
+                            </div>
+                        </div>
+                        <a href="{{ resource.file.url }}" download class="p-2 rounded-md hover:bg-[#2D3449]">
+                            <i data-lucide="download" class="w-5 h-5 text-[#958EA0]"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-24">
+                    <i data-lucide="folder-open" class="w-16 h-16 mx-auto mb-4 text-[#494454]"></i>
+                    <h2 class="text-2xl font-bold text-white">No resources shared yet.</h2>
+                    <p class="mt-2 text-lg text-[#958EA0]">Be the first to upload a file.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    lucide.createIcons();
+</script>
+{% endblock %}

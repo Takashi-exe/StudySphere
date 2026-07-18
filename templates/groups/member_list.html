@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Members of {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <a href="{% url 'groups:group_detail' group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Back to {{ group.name }}
+            </a>
+            <h1 class="text-3xl font-bold text-white">Members ({{ memberships.count }})</h1>
+        </div>
+
+        <div class="bg-[#222A3D] rounded-2xl border border-[#2D3449]/30 divide-y divide-[#2D3449]/30">
+            {% for membership in memberships %}
+            <div class="p-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <img src="{% if membership.user.profile.avatar %}{{ membership.user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ membership.user.username|urlencode }}&background=random{% endif %}" class="w-12 h-12 rounded-full" alt="{{ membership.user.username }}">
+                    <div>
+                        <a href="{% url 'accounts:view_profile' username=membership.user.username %}" class="font-bold text-white hover:underline">{{ membership.user.username }}</a>
+                        <p class="text-sm {% if membership.user == group.created_by %}text-[#D0BCFF]{% elif membership.role == 'admin' %}text-[#ADC6FF]{% elif membership.role == 'moderator' %}text-[#ADC6FF]{% else %}text-[#958EA0]{% endif %}">
+                            {% if membership.user == group.created_by %}Creator{% elif membership.role == 'admin' %}Admin{% elif membership.role == 'moderator' %}Moderator{% else %}Member{% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% if is_admin or is_moderator %}
+                <div class="flex gap-2">
+                    {% if is_admin and membership.user != group.created_by %}
+                        {% if membership.role == 'member' %}
+                        <form method="post" action="{% url 'groups:promote_member' group.id membership.user.id %}">{% csrf_token %}<button type="submit" title="Promote to Moderator" class="p-2 rounded-md hover:bg-[#ADC6FF]/10 text-[#958EA0] hover:text-[#ADC6FF]"><i data-lucide="chevrons-up" class="w-4 h-4"></i></button></form>
+                        {% elif membership.role == 'moderator' %}
+                        <form method="post" action="{% url 'groups:demote_member' group.id membership.user.id %}">{% csrf_token %}<button type="submit" title="Demote to Member" class="p-2 rounded-md hover:bg-[#D0BCFF]/10 text-[#958EA0] hover:text-[#D0BCFF]"><i data-lucide="chevron-down" class="w-4 h-4"></i></button></form>
+                        {% endif %}
+                    {% endif %}
+                    {% if (is_admin and membership.user != group.created_by) or (is_moderator and membership.role == 'member') %}
+                    <form method="post" action="{% url 'groups:remove_member' group.id membership.user.id %}" onsubmit="return confirm('Remove {{ membership.user.username }}?')">{% csrf_token %}<button type="submit" title="Remove member" class="p-2 rounded-md hover:bg-red-400/10 text-[#958EA0] hover:text-red-400"><i data-lucide="user-x" class="w-4 h-4"></i></button></form>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    lucide.createIcons();
+</script>
+{% endblock %}
