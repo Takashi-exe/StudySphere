@@ -7,10 +7,8 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="updated build.sh file">
-      <change afterPath="$PROJECT_DIR$/flashcards/migrations/0002_flashcarddeck_description.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/studysphere/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/studysphere/settings.py" afterDir="false" />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Add resources sharing to session detail">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,22 +153,6 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-    </task>
-    <task id="LOCAL-00013" summary="UI Overhaul">
-      <option name="closed" value="true" />
-      <created>1784032949509</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1784032949509</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Implemented auto generated summaries after session ends, Added the call system">
-      <option name="closed" value="true" />
-      <created>1784070834828</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1784070834828</updated>
     </task>
     <task id="LOCAL-00015" summary="Implemented flashcard game and call system">
       <option name="closed" value="true" />
@@ -548,7 +530,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784402307047</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="feat: Add description field to FlashcardDeck">
+      <option name="closed" value="true" />
+      <created>1784402632467</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1784402632469</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Add resources sharing to session detail">
+      <option name="closed" value="true" />
+      <created>1784403154120</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1784403154122</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -573,6 +571,8 @@
     <MESSAGE value="Edited the group detail page" />
     <MESSAGE value="Dixed redis error" />
     <MESSAGE value="updated build.sh file" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated build.sh file" />
+    <MESSAGE value="feat: Add description field to FlashcardDeck" />
+    <MESSAGE value="Add resources sharing to session detail" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add resources sharing to session detail" />
   </component>
 </project>
