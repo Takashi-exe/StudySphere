@@ -143,12 +143,32 @@ def api_user_search(request):
 @login_required
 def friends_list(request):
     friends = request.user.profile.friends.exclude(id=request.user.id).exclude(is_superuser=True)
-    return render(request, 'accounts/friends_list.html', {'friends': friends})
+    friend_requests = FriendRequest.objects.filter(receiver=request.user, status='pending')
+    sent_requests = FriendRequest.objects.filter(sender=request.user, status='pending')
+    context = {
+        'friends': friends,
+        'friend_requests': friend_requests,
+        'sent_requests': sent_requests,
+    }
+    return render(request, 'accounts/friends_list.html', context)
 
 @login_required
 def friend_requests_list(request):
     friend_requests = FriendRequest.objects.filter(receiver=request.user, status='pending')
     return render(request, 'accounts/friend_requests.html', {'friend_requests': friend_requests})
+
+@login_required
+def sent_requests_list(request):
+    sent_requests = FriendRequest.objects.filter(sender=request.user, status='pending')
+    return render(request, 'accounts/sent_requests_list.html', {'sent_requests': sent_requests})
+
+@login_required
+def cancel_friend_request(request, to_user_username):
+    to_user = get_object_or_404(User, username=to_user_username)
+    friend_request = get_object_or_404(FriendRequest, sender=request.user, receiver=to_user, status='pending')
+    friend_request.delete()
+    messages.info(request, "Friend request cancelled.")
+    return redirect('accounts:friends_list')
 
 @login_required
 def send_friend_request(request, to_user_username):

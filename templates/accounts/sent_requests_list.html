@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sent Friend Requests{% endblock %}
+
+{% block content %}
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white">Sent Friend Requests</h1>
+            <p class="text-[#958EA0]">Manage your outgoing friend requests.</p>
+        </div>
+
+        <div class="bg-[#222A3D] rounded-lg">
+            {% if sent_requests %}
+                <ul class="divide-y divide-[#2D3449]/50">
+                    {% for request in sent_requests %}
+                        <li class="p-4 flex items-center">
+                            <a href="{% url 'accounts:view_profile' username=request.receiver.username %}" class="flex items-center flex-grow">
+                                <img src="{% if request.receiver.profile.avatar %}{{ request.receiver.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ request.receiver.username|urlencode }}&background=random{% endif %}"
+                                     alt="{{ request.receiver.username }}"
+                                     class="w-12 h-12 rounded-full mr-4">
+                                <div>
+                                    <h5 class="font-bold text-white">{{ request.receiver.username }}</h5>
+                                    <p class="text-sm text-[#958EA0]">Friend request sent.</p>
+                                </div>
+                            </a>
+                            <div class="ml-auto flex gap-3">
+                                <span class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#2D3449] text-[#958EA0]">Pending</span>
+                                <a href="{% url 'accounts:cancel_friend_request' to_user_username=request.receiver.username %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/80 text-white hover:bg-red-500">Cancel</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="text-center py-16 text-[#958EA0]">
+                    <i data-lucide="arrow-up-right" class="w-16 h-16 mx-auto mb-4 opacity-50"></i>
+                    <h5 class="text-lg font-bold">No pending sent requests</h5>
+                    <p>You haven't sent any friend requests yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

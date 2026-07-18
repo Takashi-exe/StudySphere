@@ -8,14 +8,19 @@ from django.db.models import Prefetch
 from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
-from accounts.models import create_notification
+from accounts.models import create_notification, Notification
 from django.urls import reverse
 import uuid
 
 @login_required
 def group_list(request):
     groups = request.user.study_groups.all().select_related('created_by')
-    return render(request, 'groups/group_list.html', {'groups': groups})
+    group_invitations = Notification.objects.filter(recipient=request.user, notif_type='group_invite', is_read=False)
+    context = {
+        'groups': groups,
+        'group_invitations': group_invitations,
+    }
+    return render(request, 'groups/group_list.html', context)
 
 @login_required
 def create_group(request):

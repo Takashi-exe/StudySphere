@@ -1,55 +1,84 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Your Friends{% endblock %}
+{% block title %}Your Network{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h1 class="h2">Your Friends</h1>
-            <p class="text-secondary">Manage your connections and start conversations.</p>
-        </div>
-        <div>
-            <a href="{% url 'accounts:user_search' %}" class="btn btn-primary d-flex align-items-center">
-                <i data-lucide="search" class="me-2"></i>Find Friends
-            </a>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            {% if friends %}
-                <ul class="list-group list-group-flush">
-                    {% for friend in friends %}
-                        <li class="list-group-item d-flex align-items-center px-0 py-3">
-                            <a href="{% url 'accounts:view_profile' username=friend.username %}" class="text-decoration-none d-flex align-items-center flex-grow-1">
-                                <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username }}&background=random{% endif %}"
-                                     alt="{{ friend.username }}"
-                                     class="rounded-circle me-3"
-                                     width="48"
-                                     height="48">
-                                <div>
-                                    <h5 class="mb-0 text-primary">{{ friend.username }}</h5>
-                                    <small class="text-secondary">{{ friend.first_name }} {{ friend.last_name }}</small>
-                                </div>
-                            </a>
-                            <a href="{% url 'messaging:start_conversation' username=friend.username %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
-                                <i data-lucide="message-square" class="me-2" style="width: 16px; height: 16px;"></i> Message
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="text-center py-5">
-                    <i data-lucide="users" class="text-secondary mb-3" style="width: 48px; height: 48px;"></i>
-                    <h5 class="card-title">No friends yet</h5>
-                    <p class="text-secondary">You haven't added any friends to your network.</p>
-                    <a href="{% url 'accounts:user_search' %}" class="btn btn-primary mt-3">Find Friends</a>
+<div class="p-8 bg-[#171F33] min-h-full">
+    <div class="max-w-7xl mx-auto">
+        {% if not friends and not friend_requests and not sent_requests %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="inline-block p-5 bg-[#D0BCFF]/10 rounded-full relative">
+                    <i data-lucide="users" class="w-16 h-16 text-[#D0BCFF]"></i>
+                    <div class="absolute inset-0 rounded-full shadow-[0_0_20px_5px_rgba(208,188,255,0.2)]"></div>
                 </div>
-            {% endif %}
-        </div>
+                <h1 class="mt-8 text-3xl font-bold text-white">Find people to study with.</h1>
+                <p class="mt-2 text-lg text-[#958EA0]">Your network is currently empty. Start by finding friends.</p>
+                <div class="mt-8">
+                    <a href="{% url 'accounts:user_search' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                        Find Friends
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <!-- Populated State -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-white">Your Network</h1>
+                <a href="{% url 'accounts:user_search' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Find Friends
+                </a>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-[#222A3D] p-6 rounded-xl">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="users" class="w-8 h-8 text-[#958EA0]"></i>
+                        <div>
+                            <p class="text-2xl font-bold text-white">{{ friends.count }}</p>
+                            <p class="text-sm text-[#958EA0]">Friends</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'accounts:friend_requests_list' %}" class="bg-[#222A3D] p-6 rounded-xl hover:bg-[#2D3449]">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="user-plus" class="w-8 h-8 text-[#958EA0]"></i>
+                        <div>
+                            <p class="text-2xl font-bold text-white">{{ friend_requests.count }}</p>
+                            <p class="text-sm text-[#958EA0]">Incoming Requests</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="{% url 'accounts:sent_requests_list' %}" class="bg-[#222A3D] p-6 rounded-xl hover:bg-[#2D3449]">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="arrow-up-right" class="w-8 h-8 text-[#958EA0]"></i>
+                        <div>
+                            <p class="text-2xl font-bold text-white">{{ sent_requests.count }}</p>
+                            <p class="text-sm text-[#958EA0]">Sent Requests</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Friends Grid -->
+            <h2 class="text-2xl font-bold text-white mb-6">Friends</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for friend in friends %}
+                    <div class="bg-[#222A3D] p-6 rounded-2xl text-center">
+                        <img src="{% if friend.profile.avatar %}{{ friend.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ friend.username|urlencode }}&background=random&color=fff&size=96{% endif %}" alt="{{ friend.username }}" class="w-24 h-24 rounded-full mx-auto mb-4">
+                        <h3 class="text-lg font-bold text-white">{{ friend.username }}</h3>
+                        <p class="text-sm text-[#958EA0] mb-4">{{ friend.first_name }} {{ friend.last_name }}</p>
+                        <div class="flex flex-col gap-2">
+                            <a href="{% url 'messaging:start_conversation' username=friend.username %}" class="w-full px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">Message</a>
+                            <a href="{% url 'accounts:view_profile' username=friend.username %}" class="w-full px-4 py-2 rounded-lg text-sm font-semibold border border-[#2D3449] text-[#958EA0] hover:bg-[#2D3449]">View Profile</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
