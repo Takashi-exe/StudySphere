@@ -35,7 +35,7 @@
                         <form method="post" action="{% url 'groups:demote_member' group.id membership.user.id %}">{% csrf_token %}<button type="submit" title="Demote to Member" class="p-2 rounded-md hover:bg-[#D0BCFF]/10 text-[#958EA0] hover:text-[#D0BCFF]"><i data-lucide="chevron-down" class="w-4 h-4"></i></button></form>
                         {% endif %}
                     {% endif %}
-                    {% if (is_admin and membership.user != group.created_by) or (is_moderator and membership.role == 'member') %}
+                    {% if is_admin and membership.user != group.created_by or is_moderator and membership.role == 'member' %}
                     <form method="post" action="{% url 'groups:remove_member' group.id membership.user.id %}" onsubmit="return confirm('Remove {{ membership.user.username }}?')">{% csrf_token %}<button type="submit" title="Remove member" class="p-2 rounded-md hover:bg-red-400/10 text-[#958EA0] hover:text-red-400"><i data-lucide="user-x" class="w-4 h-4"></i></button></form>
                     {% endif %}
                 </div>

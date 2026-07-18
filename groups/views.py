@@ -35,7 +35,7 @@ def create_group(request):
             return redirect('groups:group_detail', group_id=group.id)
     else:
         form = GroupForm()
-    return render(request, 'groups/group_form.html', {'form': form})
+    return render(request, 'groups/group_form.html', {'form': form, 'is_edit': False})
 
 @login_required
 def group_detail(request, group_id):
@@ -80,9 +80,10 @@ def resource_list(request, group_id):
     group = get_object_or_404(StudyGroup, id=group_id)
     is_member = GroupMembership.objects.filter(group=group, user=request.user).exists()
 
+    if not is_member:
+        return HttpResponseForbidden("You must be a member to view this page.")
+
     if request.method == 'POST':
-        if not is_member:
-            return HttpResponseForbidden("You must be a member to upload resources.")
         form = GroupResourceForm(request.POST, request.FILES)
         if form.is_valid():
             resource = form.save(commit=False)
@@ -106,6 +107,9 @@ def resource_list(request, group_id):
 @login_required
 def member_list(request, group_id):
     group = get_object_or_404(StudyGroup, id=group_id)
+    if not group.members.filter(id=request.user.id).exists():
+        return HttpResponseForbidden("You must be a member to view this page.")
+
     memberships = GroupMembership.objects.filter(group=group).select_related('user', 'user__profile').order_by('joined_at')
     user_membership = memberships.filter(user=request.user).first()
     

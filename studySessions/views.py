@@ -159,6 +159,8 @@ def close_session(request, session_id):
 @login_required
 def session_history(request, group_id):
     group = get_object_or_404(StudyGroup, id=group_id)
+    if not group.members.filter(id=request.user.id).exists():
+        return HttpResponseForbidden("You must be a member to view this page.")
     sessions = StudySession.objects.filter(group=group, is_active=False).order_by('-start_time')
     paginator = Paginator(sessions, 10)
     page_number = request.GET.get('page')

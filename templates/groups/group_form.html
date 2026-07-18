@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if form.instance.id %}Edit Group{% else %}Create a New Group{% endif %}{% endblock %}
+{% block title %}{% if is_edit %}Edit Group{% else %}Create a New Group{% endif %}{% endblock %}
 
 {% block content %}
 <div class="p-8 bg-[#060E20] min-h-full">
     <div class="max-w-3xl mx-auto">
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-white">{% if form.instance.id %}Edit '{{ form.instance.name }}'{% else %}Create a new study group{% endif %}</h1>
-            <p class="text-[#958EA0]">{% if form.instance.id %}Update the details for your group.{% else %}Fill out the details to get your new group started.{% endif %}</p>
+            <h1 class="text-3xl font-bold text-white">{% if is_edit %}Edit '{{ form.instance.name }}'{% else %}Create a new study group{% endif %}</h1>
+            <p class="text-[#958EA0]">{% if is_edit %}Update the details for your group.{% else %}Fill out the details to get your new group started.{% endif %}</p>
         </div>
 
         <form method="post" enctype="multipart/form-data" class="bg-[#171F33] p-8 rounded-2xl border border-[#2D3449]/50 space-y-6">
@@ -70,9 +70,9 @@
             </div>
 
             <div class="pt-6 flex items-center justify-end gap-x-6">
-                <a href="{% if form.instance.id %}{% url 'groups:group_detail' form.instance.id %}{% else %}{% url 'groups:group_list' %}{% endif %}" class="text-sm font-semibold leading-6 text-white">Cancel</a>
+                <a href="{% if is_edit %}{% url 'groups:group_detail' form.instance.id %}{% else %}{% url 'groups:group_list' %}{% endif %}" class="text-sm font-semibold leading-6 text-white">Cancel</a>
                 <button type="submit" class="rounded-md bg-[#D0BCFF] px-4 py-2 text-sm font-semibold text-[#0B1326] shadow-sm hover:bg-opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A078FF]">
-                    {% if form.instance.id %}Save Changes{% else %}Create Group{% endif %}
+                    {% if is_edit %}Save Changes{% else %}Create Group{% endif %}
                 </button>
             </div>
         </form>
