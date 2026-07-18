@@ -4,4 +4,4 @@ from .models import FlashcardDeck
 class DeckForm(forms.ModelForm):
     class Meta:
         model = FlashcardDeck
-        fields = ['title']
+        fields = ['title', 'description']

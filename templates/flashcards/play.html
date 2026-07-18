@@ -33,20 +33,49 @@
             <button id="got-it-btn" class="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-500/20 text-green-400 font-semibold"><i data-lucide="check" class="w-5 h-5"></i> Got It</button>
         </div>
 
-        <div id="end-screen" class="hidden text-center p-8 bg-[#222A3D] rounded-xl">
-            <h2 class="text-3xl font-bold text-white">Session Complete!</h2>
-            <div class="my-6">
-                <p class="text-5xl font-bold text-white"><span id="score">0</span>/<span id="total">0</span></p>
-                <p class="text-[#958EA0]">Accuracy: <span id="accuracy">0</span>%</p>
+        <div id="end-screen" class="hidden text-center p-8">
+            <h2 class="text-3xl font-bold text-white">Flashcards Complete</h2>
+            <p class="text-[#958EA0] mt-1">Review your performance and try again.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center my-12">
+                <div class="relative">
+                    <svg class="w-full h-full" viewBox="0 0 120 120">
+                        <circle class="text-[#2D3449]/50" stroke-width="10" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60" />
+                        <circle id="progress-ring" class="text-[#F4A896]" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="50" cx="60" cy="60"
+                            stroke-dasharray="314"
+                            stroke-dashoffset="314"
+                            transform="rotate(-90 60 60)" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span id="accuracy" class="text-4xl font-bold text-white">0%</span>
+                        <span class="text-sm text-[#958EA0]">Mastery</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-left">
+                    <div class="bg-[#222A3D] p-4 rounded-lg">
+                        <p class="text-xs text-[#958EA0]">TOTAL CARDS</p>
+                        <p id="total" class="text-2xl font-bold text-white">0</p>
+                    </div>
+                    <div class="bg-[#222A3D] p-4 rounded-lg">
+                        <p class="text-xs text-green-400">GOT IT</p>
+                        <p id="score" class="text-2xl font-bold text-white">0</p>
+                    </div>
+                    <div class="bg-[#222A3D] p-4 rounded-lg col-span-2">
+                        <p class="text-xs text-red-400">MISSED IT</p>
+                        <p id="missed-count" class="text-2xl font-bold text-white">0</p>
+                    </div>
+                </div>
             </div>
-            <div id="missed-cards" class="mt-6 text-left">
-                <h3 class="font-bold text-white mb-2">Missed Cards:</h3>
-                <ul id="missed-list" class="space-y-1"></ul>
+
+            <div id="missed-cards" class="mt-6 text-left hidden">
+                <h3 class="font-bold text-white mb-2">Review Missed Cards:</h3>
+                <ul id="missed-list" class="space-y-2 text-sm text-[#958EA0]"></ul>
             </div>
-            <div class="mt-8 flex flex-col gap-3">
-                <button id="retry-missed-btn" class="w-full px-4 py-2 rounded-lg font-semibold bg-[#A078FF] text-white">Retry Missed Cards</button>
-                <button id="study-again-btn" class="w-full px-4 py-2 rounded-lg font-semibold bg-[#2D3449] text-white">Study Again</button>
-                <a href="{% url 'flashcards:deck_detail' deck.group.id deck.id %}" class="w-full px-4 py-2 rounded-lg font-semibold border border-[#2D3449]/50 text-[#958EA0] hover:bg-[#2D3449]/50">Back to Deck</a>
+
+            <div class="mt-8 flex flex-col md:flex-row gap-3">
+                <button id="retry-missed-btn" class="w-full px-4 py-3 rounded-lg font-semibold bg-[#A078FF] text-white">Retry Missed Cards</button>
+                <button id="study-again-btn" class="w-full px-4 py-3 rounded-lg font-semibold bg-[#2D3449] text-white">Study Again</button>
+                <a href="{% url 'flashcards:deck_detail' deck.group.id deck.id %}" class="w-full px-4 py-3 rounded-lg font-semibold border border-[#2D3449]/50 text-[#958EA0] hover:bg-[#2D3449]/50 text-center">Back to Deck</a>
             </div>
         </div>
     </div>
@@ -59,4 +88,21 @@
         const cards = {{ cards_json|safe }};
     </script>
     <script src="{% static 'js/flashcard_game.js' %}"></script>
+    <script>
+        // This script enhances the existing flashcard_game.js by updating the new UI elements
+        const originalShowEndScreen = window.showEndScreen;
+        window.showEndScreen = function(score, total) {
+            originalShowEndScreen(score, total);
+
+            const accuracy = total > 0 ? Math.round((score / total) * 100) : 0;
+            const missedCount = total - score;
+
+            document.getElementById('missed-count').textContent = missedCount;
+
+            const progressRing = document.getElementById('progress-ring');
+            const circumference = 2 * Math.PI * 50; // 2 * pi * r
+            const offset = circumference - (accuracy / 100) * circumference;
+            progressRing.style.strokeDashoffset = offset;
+        };
+    </script>
 {% endblock %}

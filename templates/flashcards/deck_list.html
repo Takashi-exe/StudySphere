@@ -1,38 +1,67 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Flashcard Decks for {{ group.name }}{% endblock %}
 
 {% block content %}
 <div class="p-8 bg-[#171F33] min-h-full">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-7xl mx-auto">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm text-[#958EA0] mb-4">
+            <a href="{% url 'groups:group_detail' group.id %}" class="hover:text-white">{{ group.name }}</a>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            <span>Flashcards</span>
+        </nav>
+
         <div class="flex justify-between items-center mb-8">
             <div>
-                <a href="{% url 'groups:group_detail' group.id %}" class="flex items-center gap-2 text-sm text-[#958EA0] hover:text-white mb-4">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    Back to {{ group.name }}
-                </a>
                 <h1 class="text-3xl font-bold text-white">Flashcard Decks</h1>
+                <p class="text-[#958EA0] mt-1">Create and study flashcards with your group.</p>
             </div>
-            <a href="{% url 'flashcards:create_deck' group.id %}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] flex items-center gap-2">
+            <a href="{% url 'flashcards:create_deck' group.id %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-[#D0BCFF] text-[#0B1326] hover:bg-opacity-90">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Create Deck
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for deck in decks %}
-            <a href="{% url 'flashcards:deck_detail' group.id deck.id %}" class="bg-[#222A3D] rounded-xl p-6 hover:bg-[#2D3449]/50">
-                <h3 class="font-bold text-white text-lg">{{ deck.title }}</h3>
-                <p class="text-sm text-[#958EA0] mt-2">{{ deck.cards.count }} cards</p>
-            </a>
-            {% empty %}
-            <div class="md:col-span-3 text-center py-16 text-[#958EA0]">
-                <i data-lucide="layers" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
-                <p>No flashcard decks yet for this group.</p>
+            <div class="bg-[#222A3D] rounded-2xl flex flex-col group">
+                <div class="p-6 flex-grow">
+                    <div class="flex justify-between items-start">
+                        <a href="{% url 'flashcards:deck_detail' group.id deck.id %}" class="block">
+                            <h3 class="font-bold text-white text-lg hover:text-[#D0BCFF]">{{ deck.title }}</h3>
+                        </a>
+                        <a href="{% url 'flashcards:edit_deck' group.id deck.id %}" class="p-1.5 rounded-md hover:bg-[#2D3449] text-[#958EA0] hover:text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                    <p class="text-sm text-[#958EA0] mt-2">{{ deck.cards.count }} cards</p>
+                </div>
+                <div class="border-t border-[#2D3449]/30 px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        <img src="https://ui-avatars.com/api/?name={{ deck.created_by.username|urlencode }}&size=24&background=random" class="w-6 h-6 rounded-full" alt="{{ deck.created_by.username }}">
+                        <p class="text-xs text-[#958EA0]">
+                            Created by {{ deck.created_by.username }} · {{ deck.created_at|naturaltime }}
+                        </p>
+                    </div>
+                </div>
             </div>
             {% endfor %}
+
+            <!-- Add New Deck Tile -->
+            <a href="{% url 'flashcards:create_deck' group.id %}" class="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-[#2D3449]/50 text-[#958EA0] hover:border-[#D0BCFF] hover:text-[#D0BCFF] transition-colors">
+                <i data-lucide="plus" class="w-10 h-10 mb-2"></i>
+                <span class="font-semibold">Add New Deck</span>
+            </a>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    lucide.createIcons();
+</script>
 {% endblock %}
