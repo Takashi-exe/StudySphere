@@ -15,7 +15,7 @@
             {% csrf_token %}
 
             <div class="text-center">
-                <img id="avatar-preview" src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username|urlencode }}&size=128&background=random{% endif %}" alt="Avatar" class="w-32 h-32 rounded-full mx-auto mb-4">
+                <img id="avatar-preview" src="{% if user.profile.avatar_url %}{{ user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ user.username|urlencode }}&size=128&background=random{% endif %}" alt="Avatar" class="w-32 h-32 rounded-full mx-auto mb-4">
                 <label for="{{ profile_form.avatar.id_for_label }}" class="cursor-pointer px-4 py-2 rounded-lg text-sm font-semibold border border-[#D0BCFF]/50 text-[#D0BCFF] hover:bg-[#D0BCFF]/10">
                     Change Avatar
                 </label>
@@ -52,7 +52,7 @@
             </div>
 
             <div>
-                <label for="{{ profile_form.github_url.id_for_label }}" class="block text-sm font-medium text-[#958EA0] mb-2">GitHub URL</label>
+                <label for="{{ profile_form.github_url.id_for_label }}" class="block text-sm font-semibold uppercase text-[#958EA0] mb-2">GitHub URL</label>
                 <div class="relative">
                     <i data-lucide="github" class="w-4 h-4 text-[#958EA0] absolute top-1/2 left-3 -translate-y-1/2"></i>
                     {{ profile_form.github_url }}
