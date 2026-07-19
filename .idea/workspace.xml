@@ -7,7 +7,7 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fixed server error in group_detail.html">
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="switched to local storage from AWS bucket">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -153,15 +153,7 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-      <workItem from="1784487705873" duration="1486000" />
-    </task>
-    <task id="LOCAL-00026" summary="Fix merged requirements.txt line">
-      <option name="closed" value="true" />
-      <created>1784213687105</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1784213687105</updated>
+      <workItem from="1784487705873" duration="5825000" />
     </task>
     <task id="LOCAL-00027" summary="Fix merged notifications/__init__.py">
       <option name="closed" value="true" />
@@ -547,14 +539,21 @@
       <option name="project" value="LOCAL" />
       <updated>1784488841574</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="switched to local storage from AWS bucket">
+      <option name="closed" value="true" />
+      <created>1784489295323</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1784489295323</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Worked on user Profiles, friend system and private messaging system" />
     <MESSAGE value="Started working on group chats" />
     <MESSAGE value="UI Overhaul" />
     <MESSAGE value="Implemented auto generated summaries after session ends, Added the call system" />
@@ -579,6 +578,7 @@
     <MESSAGE value="Added error pages" />
     <MESSAGE value="FIxed profile picture upload" />
     <MESSAGE value="Fixed server error in group_detail.html" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed server error in group_detail.html" />
+    <MESSAGE value="switched to local storage from AWS bucket" />
+    <option name="LAST_COMMIT_MESSAGE" value="switched to local storage from AWS bucket" />
   </component>
 </project>
