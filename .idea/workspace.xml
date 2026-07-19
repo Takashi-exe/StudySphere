@@ -7,9 +7,8 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Added error pages">
-      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/profile.html" afterDir="false" />
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="FIxed profile picture upload">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,22 +153,7 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-    </task>
-    <task id="LOCAL-00022" summary="...">
-      <option name="closed" value="true" />
-      <created>1784211465168</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1784211465168</updated>
-    </task>
-    <task id="LOCAL-00023" summary="...">
-      <option name="closed" value="true" />
-      <created>1784212005953</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1784212005953</updated>
+      <workItem from="1784487705873" duration="449000" />
     </task>
     <task id="LOCAL-00024" summary="...">
       <option name="closed" value="true" />
@@ -547,7 +531,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784407049933</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="FIxed profile picture upload">
+      <option name="closed" value="true" />
+      <created>1784407491848</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1784407491848</updated>
+    </task>
+    <task id="LOCAL-00072" summary="FIxed profile picture upload">
+      <option name="closed" value="true" />
+      <created>1784407730105</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1784407730105</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -578,6 +578,7 @@
     <MESSAGE value="Fixed Server errors" />
     <MESSAGE value="Group form page" />
     <MESSAGE value="Added error pages" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added error pages" />
+    <MESSAGE value="FIxed profile picture upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="FIxed profile picture upload" />
   </component>
 </project>

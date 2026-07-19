@@ -37,7 +37,7 @@
             {% for message in chat_messages %}
             <div class="flex items-start gap-3 {% if message.user == request.user %}flex-row-reverse{% endif %}">
                 {% if message.user != request.user %}
-                <img src="{% if message.user.profile.avatar %}{{ message.user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ message.user.username|urlencode }}&background=random{% endif %}" alt="{{ message.user.username }}" class="w-8 h-8 rounded-full">
+                <img src="{% if message.user.profile.avatar_url %}{{ message.user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ message.user.username|urlencode }}&background=random{% endif %}" alt="{{ message.user.username }}" class="w-8 h-8 rounded-full">
                 {% endif %}
                 <div class="max-w-md">
                     {% if message.user != request.user %}
@@ -126,7 +126,7 @@
                     {% for membership in memberships|slice:":5" %}
                     <div class="flex items-center justify-between py-1.5">
                         <div class="flex items-center gap-2">
-                            <img src="{% if membership.user.profile.avatar %}{{ membership.user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ membership.user.username|urlencode }}&background=random{% endif %}" class="w-8 h-8 rounded-full" alt="{{ membership.user.username }}">
+                            <img src="{% if membership.user.profile.avatar_url %}{{ membership.user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ membership.user.username|urlencode }}&background=random{% endif %}" class="w-8 h-8 rounded-full" alt="{{ membership.user.username }}">
                             <div>
                                 <p class="text-sm font-medium text-white">{{ membership.user.username }}</p>
                                 <p class="text-xs {% if membership.user == group.created_by %}text-[#D0BCFF]{% elif membership.role == 'admin' %}text-[#ADC6FF]{% elif membership.role == 'moderator' %}text-[#ADC6FF]{% else %}text-[#958EA0]{% endif %}">
