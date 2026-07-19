@@ -28,13 +28,13 @@ services:
       - key: MAINTENANCE_MODE
         value: "False"
       - key: AWS_ACCESS_KEY_ID
-        value: ""
+        sync: false
       - key: AWS_SECRET_ACCESS_KEY
-        value: ""
+        sync: false
       - key: AWS_STORAGE_BUCKET_NAME
-        value: ""
+        sync: false
       - key: AWS_S3_ENDPOINT_URL
-        value: ""
+        sync: false
   - type: redis
     name: redis
     plan: free
