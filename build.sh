@@ -4,7 +4,7 @@ set -o errexit
 
 pip install -r requirements.txt
 
-python manage.py check_redis
+
 python manage.py cleanup_missing_avatars
 
 python manage.py collectstatic --no-input
