@@ -2,6 +2,11 @@ Django~=4.2
 channels==4.0.0
 channels-redis==4.2.0
 django-redis==5.4.0
+# Pin redis-py explicitly: it was previously unpinned, so a rebuild pulled 8.0.0,
+# whose DEFAULT_SOCKET_TIMEOUT=5 collides with channels-redis brpop_timeout=5 and
+# kills idle WebSockets. Our settings.py sets socket_timeout=20 to handle this; the
+# pin keeps the build deterministic so the interaction can't silently change again.
+redis==8.0.0
 python-dotenv
 gunicorn
 Pillow

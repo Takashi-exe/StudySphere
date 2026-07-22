@@ -9,21 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fixed private messaging">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/groups/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/consumers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messaging/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/messaging/consumers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/studySessions/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/studySessions/consumers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/studysphere/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/studysphere/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/friend_requests.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/friend_requests.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/friends_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/friends_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/notifications.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/notifications.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/sent_requests_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/sent_requests_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/groups/member_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/groups/member_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/messaging/conversation_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/messaging/conversation_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/messaging/inbox_panel.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/messaging/inbox_panel.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sessions/session_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sessions/session_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/studySessions/session_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/studySessions/session_detail.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,15 +157,7 @@
       <workItem from="1784243905155" duration="7067000" />
       <workItem from="1784487705873" duration="6907000" />
       <workItem from="1784734711476" duration="296000" />
-      <workItem from="1784735043512" duration="4007000" />
-    </task>
-    <task id="LOCAL-00029" summary="Fix merged requirements.txt">
-      <option name="closed" value="true" />
-      <created>1784216580625</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1784216580625</updated>
+      <workItem from="1784735043512" duration="5214000" />
     </task>
     <task id="LOCAL-00030" summary="Regenerate requirements.txt from working local environment">
       <option name="closed" value="true" />
@@ -564,7 +543,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784736993982</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="Fixed private messaging">
+      <option name="closed" value="true" />
+      <created>1784741549218</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1784741549218</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

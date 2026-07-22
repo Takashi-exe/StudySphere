@@ -153,16 +153,25 @@ if REDIS_URL:
     # Resilience tuning for channels_redis 4.3.x / redis-py 8.x on Render.
     #
     # A managed Redis instance can briefly stall (failover, maintenance, network
-    # blip). Without timeouts/keepalive/health-checks a single stalled read
-    # (`TimeoutError: Timeout reading from ...`) can wedge a WebSocket consumer.
-    # These settings bound how long a Redis op can hang and let the client detect
-    # and recycle dead connections instead of blocking forever.
+    # blip). We want to detect and recycle dead connections instead of blocking
+    # forever — WITHOUT breaking the channel layer's normal operation.
     #
-    # NOTE on the API: channels_redis feeds each "hosts" entry to
-    # redis.asyncio.ConnectionPool.from_url(address, **rest), so connection
-    # options must live *in the host dict itself* — there is no separate
-    # "redis_kwargs" key. `retry_on_timeout=True` makes redis.asyncio build a
-    # one-shot retry that treats TimeoutError as retryable before it propagates.
+    # !!! socket_timeout on the CHANNEL LAYER must be > brpop_timeout (5s), NOT
+    # unset. channels_redis's receive loop issues a *blocking* BZPOPMIN with a 5s
+    # server-side timeout (RedisChannelLayer.brpop_timeout = 5), and redis-py uses
+    # socket_timeout as the socket *read* timeout for that same call. redis-py 8.0
+    # changed the DEFAULT socket_timeout from None to 5s (redis/_defaults.py), so
+    # the read timeout now *ties* the blocking-pop timeout and loses the race —
+    # raising `TimeoutError: Timeout reading from ...` on every idle connection.
+    # This is the exact crash in the logs, and it happens even with no timeout set
+    # in settings because the library default is 5. Setting it comfortably ABOVE
+    # brpop_timeout lets the server-side pop return (empty) first on idle, while
+    # still bounding a genuinely dead socket. Keepalive + health checks recycle
+    # stale connections.
+    #
+    # API note: channels_redis feeds each "hosts" entry to
+    # redis.asyncio.ConnectionPool.from_url(address, **rest), so connection options
+    # live in the host dict itself — there is no separate "redis_kwargs" key.
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -171,10 +180,9 @@ if REDIS_URL:
                     {
                         "address": REDIS_URL,
                         "socket_connect_timeout": 5,
-                        "socket_timeout": 5,
+                        "socket_timeout": 20,  # MUST stay > brpop_timeout (5s)
                         "socket_keepalive": True,
                         "health_check_interval": 30,
-                        "retry_on_timeout": True,
                     }
                 ],
             },
@@ -190,6 +198,8 @@ if REDIS_URL:
                 # and 500-ing the request. WebSockets are the critical path here;
                 # the cache is not worth taking the whole view down for.
                 "IGNORE_EXCEPTIONS": True,
+                # Safe here (unlike the channel layer): django-redis issues short,
+                # non-blocking cache ops, so a read timeout bounds a genuine stall.
                 "SOCKET_CONNECT_TIMEOUT": 5,
                 "SOCKET_TIMEOUT": 5,
                 "CONNECTION_POOL_KWARGS": {
