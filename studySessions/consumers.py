@@ -1,17 +1,28 @@
 import json
+import logging
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from redis.exceptions import RedisError
 from .models import StudySession
+
+logger = logging.getLogger(__name__)
+
 
 class TimerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.session_id = self.scope['url_route']['kwargs']['session_id']
         self.session_group_name = f'session_{self.session_id}'
 
-        await self.channel_layer.group_add(
-            self.session_group_name,
-            self.channel_name
-        )
+        try:
+            await self.channel_layer.group_add(
+                self.session_group_name,
+                self.channel_name
+            )
+        except RedisError:
+            logger.exception("Redis error on group_add for %s", self.session_group_name)
+            await self.close(code=1011)
+            return
 
         await self.accept()
 
@@ -24,10 +35,13 @@ class TimerConsumer(AsyncWebsocketConsumer):
             }))
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.session_group_name,
-            self.channel_name
-        )
+        try:
+            await self.channel_layer.group_discard(
+                self.session_group_name,
+                self.channel_name
+            )
+        except RedisError:
+            logger.warning("Redis error on group_discard for %s", self.session_group_name)
 
     async def timer_update(self, event):
         await self.send(text_data=json.dumps({

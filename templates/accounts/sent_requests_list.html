@@ -17,7 +17,7 @@
                     {% for request in sent_requests %}
                         <li class="p-4 flex items-center">
                             <a href="{% url 'accounts:view_profile' username=request.receiver.username %}" class="flex items-center flex-grow">
-                                <img src="{% if request.receiver.profile.avatar %}{{ request.receiver.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ request.receiver.username|urlencode }}&background=random{% endif %}"
+                                <img src="{% if request.receiver.profile.avatar_url %}{{ request.receiver.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ request.receiver.username|urlencode }}&background=random{% endif %}"
                                      alt="{{ request.receiver.username }}"
                                      class="w-12 h-12 rounded-full mr-4">
                                 <div>

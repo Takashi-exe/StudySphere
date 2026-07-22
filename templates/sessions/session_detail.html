@@ -10,7 +10,7 @@
             {% for post in posts %}
             <div class="mb-4 p-4 bg-gray-800 rounded-lg">
                 <div class="flex items-center mb-2">
-                    <img src="{% if post.author.profile.avatar %}{{ post.author.profile.avatar.url }}{% else %}https://via.placeholder.com/40{% endif %}" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
+                    <img src="{% if post.author.profile.avatar_url %}{{ post.author.profile.avatar_url }}{% else %}https://via.placeholder.com/40{% endif %}" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
                     <span class="font-bold">{{ post.author.username }}</span>
                     <span class="text-gray-400 text-sm ml-2">{{ post.created_at|date:"h:i A" }}</span>
                 </div>

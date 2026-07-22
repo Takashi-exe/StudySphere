@@ -16,7 +16,7 @@
                     {% with other_user=p %}
                     <div class="flex items-center justify-between p-4 border-b border-[#2D3449]/50">
                         <div class="flex items-center">
-                            <img src="{% if other_user.profile.avatar %}{{ other_user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ other_user.username|urlencode }}&background=3C0091&color=FFFFFF{% endif %}" alt="{{ other_user.username }}" class="w-10 h-10 rounded-full mr-4">
+                            <img src="{% if other_user.profile.avatar_url %}{{ other_user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ other_user.username|urlencode }}&background=3C0091&color=FFFFFF{% endif %}" alt="{{ other_user.username }}" class="w-10 h-10 rounded-full mr-4">
                             <span class="font-bold text-lg">{{ other_user.username }}</span>
                         </div>
                         <div class="flex items-center gap-4">
@@ -38,7 +38,7 @@
                 {% for message in messages_on_date %}
                     <div class="flex items-end gap-3 {% if message.sender == request.user %}flex-row-reverse{% endif %}">
                         {% if message.sender != request.user %}
-                        <img src="{% if message.sender.profile.avatar %}{{ message.sender.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ message.sender.username|urlencode }}&background=random{% endif %}" alt="{{ message.sender.username }}" class="w-8 h-8 rounded-full">
+                        <img src="{% if message.sender.profile.avatar_url %}{{ message.sender.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ message.sender.username|urlencode }}&background=random{% endif %}" alt="{{ message.sender.username }}" class="w-8 h-8 rounded-full">
                         {% endif %}
                         <div class="max-w-md p-3 rounded-2xl {% if message.sender == request.user %}bg-[#D0BCFF] text-[#0B1326]{% else %}bg-[#222A3D] text-white{% endif %}">
                             <p class="text-sm">{{ message.text }}</p>

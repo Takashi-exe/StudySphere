@@ -128,7 +128,7 @@ def api_user_search(request):
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'avatar': user.profile.avatar.url if user.profile.avatar else f"https://ui-avatars.com/api/?name={user.username.replace(' ', '+')}&background=random",
+            'avatar': user.profile.avatar_url or f"https://ui-avatars.com/api/?name={user.username.replace(' ', '+')}&background=random",
             'friendship_status': friendship_status,
             'common_groups': list(common_groups.values_list('name', flat=True)[:2]) # Limit to 2
         })

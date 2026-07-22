@@ -1,8 +1,14 @@
 import json
+import logging
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import User
+from redis.exceptions import RedisError
 from .models import StudyGroup, GroupChatMessage
+
+logger = logging.getLogger(__name__)
+
 
 class GroupChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -14,17 +20,25 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name
-        )
+        try:
+            await self.channel_layer.group_add(
+                self.group_name,
+                self.channel_name
+            )
+        except RedisError:
+            logger.exception("Redis error on group_add for %s", self.group_name)
+            await self.close(code=1011)
+            return
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+        try:
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name
+            )
+        except RedisError:
+            logger.warning("Redis error on group_discard for %s", self.group_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -35,15 +49,23 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
 
         new_message = await self.save_message(message)
 
-        await self.channel_layer.group_send(
-            self.group_name,
-            {
-                'type': 'chat_message',
-                'message': new_message.content,
-                'user': self.user.username,
-                'avatar_url': await self.get_avatar_url(self.user)
-            }
-        )
+        try:
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    'type': 'chat_message',
+                    'message': new_message.content,
+                    'user': self.user.username,
+                    'avatar_url': await self.get_avatar_url(self.user)
+                }
+            )
+        except RedisError:
+            # One user's Redis timeout must not take down the consumer; notify
+            # only this client so everyone else's connection stays alive.
+            logger.exception("Redis error on group_send for %s", self.group_name)
+            await self.send(text_data=json.dumps({
+                'error': 'Message could not be delivered right now. Please try again.'
+            }))
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
@@ -59,9 +81,9 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_avatar_url(self, user):
-        if user.profile.avatar:
-            return user.profile.avatar.url
-        return f"https://ui-avatars.com/api/?name={user.username.replace(' ', '+')}&background=random"
+        return user.profile.avatar_url or (
+            f"https://ui-avatars.com/api/?name={user.username.replace(' ', '+')}&background=random"
+        )
 
 class VoiceConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -73,52 +95,70 @@ class VoiceConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        await self.channel_layer.group_add(self.voice_room, self.channel_name)
+        try:
+            await self.channel_layer.group_add(self.voice_room, self.channel_name)
+        except RedisError:
+            logger.exception("Redis error on group_add for %s", self.voice_room)
+            await self.close(code=1011)
+            return
         await self.accept()
 
-        await self.channel_layer.group_send(self.voice_room, {
-            'type': 'peer_joined',
-            'peer_id': self.user.username,
-            'channel_name': self.channel_name,
-        })
+        try:
+            await self.channel_layer.group_send(self.voice_room, {
+                'type': 'peer_joined',
+                'peer_id': self.user.username,
+                'channel_name': self.channel_name,
+            })
+        except RedisError:
+            # Non-fatal: the client is connected, it just wasn't announced to
+            # existing peers. Log rather than dropping the connection.
+            logger.exception("Redis error announcing peer_joined for %s", self.voice_room)
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_send(self.voice_room, {
-            'type': 'peer_left',
-            'peer_id': self.user.username,
-        })
-        await self.channel_layer.group_discard(self.voice_room, self.channel_name)
+        try:
+            await self.channel_layer.group_send(self.voice_room, {
+                'type': 'peer_left',
+                'peer_id': self.user.username,
+            })
+            await self.channel_layer.group_discard(self.voice_room, self.channel_name)
+        except RedisError:
+            logger.warning("Redis error during voice disconnect for %s", self.voice_room)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         msg_type = data.get('type')
 
-        if msg_type == 'offer':
-            await self.channel_layer.send(data['target'], {
-                'type': 'voice_signal',
-                'signal_type': 'offer',
-                'sdp': data['sdp'],
-                'from_peer': self.user.username,
-                'from_channel': self.channel_name,
-            })
+        try:
+            if msg_type == 'offer':
+                await self.channel_layer.send(data['target'], {
+                    'type': 'voice_signal',
+                    'signal_type': 'offer',
+                    'sdp': data['sdp'],
+                    'from_peer': self.user.username,
+                    'from_channel': self.channel_name,
+                })
 
-        elif msg_type == 'answer':
-            await self.channel_layer.send(data['target'], {
-                'type': 'voice_signal',
-                'signal_type': 'answer',
-                'sdp': data['sdp'],
-                'from_peer': self.user.username,
-                'from_channel': self.channel_name,
-            })
+            elif msg_type == 'answer':
+                await self.channel_layer.send(data['target'], {
+                    'type': 'voice_signal',
+                    'signal_type': 'answer',
+                    'sdp': data['sdp'],
+                    'from_peer': self.user.username,
+                    'from_channel': self.channel_name,
+                })
 
-        elif msg_type == 'ice_candidate':
-            await self.channel_layer.send(data['target'], {
-                'type': 'voice_signal',
-                'signal_type': 'ice_candidate',
-                'candidate': data['candidate'],
-                'from_peer': self.user.username,
-                'from_channel': self.channel_name,
-            })
+            elif msg_type == 'ice_candidate':
+                await self.channel_layer.send(data['target'], {
+                    'type': 'voice_signal',
+                    'signal_type': 'ice_candidate',
+                    'candidate': data['candidate'],
+                    'from_peer': self.user.username,
+                    'from_channel': self.channel_name,
+                })
+        except RedisError:
+            # A dropped signalling message must not kill the WebRTC session for
+            # this peer; log and let the client retry/renegotiate.
+            logger.exception("Redis error relaying voice %s in %s", msg_type, self.voice_room)
 
     async def peer_joined(self, event):
         await self.send(text_data=json.dumps({

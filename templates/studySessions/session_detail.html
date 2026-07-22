@@ -28,7 +28,7 @@
         <div id="post-feed" class="flex-grow p-6 overflow-y-auto space-y-6">
             {% for post in posts %}
                 <div class="flex items-start gap-3">
-                    <img src="{% if post.author.profile.avatar %}{{ post.author.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ post.author.username|urlencode }}&background=random{% endif %}" alt="{{ post.author.username }}" class="w-8 h-8 rounded-full">
+                    <img src="{% if post.author.profile.avatar_url %}{{ post.author.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ post.author.username|urlencode }}&background=random{% endif %}" alt="{{ post.author.username }}" class="w-8 h-8 rounded-full">
                     <div>
                         <p class="text-sm font-semibold mb-1" style="color: hsl({{ post.author.id|add:180 }}, 70%, 70%);">{{ post.author.username }}</p>
                         <div class="p-3 rounded-lg bg-[#222A3D] text-white">

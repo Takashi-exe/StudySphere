@@ -150,11 +150,33 @@ ASGI_APPLICATION = 'studysphere.asgi.application'
 REDIS_URL = os.environ.get('REDIS_URL')
 
 if REDIS_URL:
+    # Resilience tuning for channels_redis 4.3.x / redis-py 8.x on Render.
+    #
+    # A managed Redis instance can briefly stall (failover, maintenance, network
+    # blip). Without timeouts/keepalive/health-checks a single stalled read
+    # (`TimeoutError: Timeout reading from ...`) can wedge a WebSocket consumer.
+    # These settings bound how long a Redis op can hang and let the client detect
+    # and recycle dead connections instead of blocking forever.
+    #
+    # NOTE on the API: channels_redis feeds each "hosts" entry to
+    # redis.asyncio.ConnectionPool.from_url(address, **rest), so connection
+    # options must live *in the host dict itself* — there is no separate
+    # "redis_kwargs" key. `retry_on_timeout=True` makes redis.asyncio build a
+    # one-shot retry that treats TimeoutError as retryable before it propagates.
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [REDIS_URL],
+                "hosts": [
+                    {
+                        "address": REDIS_URL,
+                        "socket_connect_timeout": 5,
+                        "socket_timeout": 5,
+                        "socket_keepalive": True,
+                        "health_check_interval": 30,
+                        "retry_on_timeout": True,
+                    }
+                ],
             },
         },
     }
@@ -164,9 +186,22 @@ if REDIS_URL:
             "LOCATION": REDIS_URL,
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
+                # If Redis is down, treat it as a cache miss instead of raising
+                # and 500-ing the request. WebSockets are the critical path here;
+                # the cache is not worth taking the whole view down for.
+                "IGNORE_EXCEPTIONS": True,
+                "SOCKET_CONNECT_TIMEOUT": 5,
+                "SOCKET_TIMEOUT": 5,
+                "CONNECTION_POOL_KWARGS": {
+                    "socket_keepalive": True,
+                    "health_check_interval": 30,
+                    "retry_on_timeout": True,
+                },
+            },
         }
     }
+    # Log (don't raise) when django-redis swallows an exception via IGNORE_EXCEPTIONS.
+    DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 
 LOGGING = {
     'version': 1,

@@ -16,7 +16,7 @@
             <a href="{% url 'messaging:conversation_detail' conv.id %}" class="block p-4 border-b border-[#2D3449]/20 hover:bg-[#222A3D] {% if active_conversation_id == conv.id %}bg-[#222A3D]{% endif %} conversation-item" data-username="{{ conv.other_user.username }}">
                 <div class="flex items-center">
                     <div class="relative w-12 h-12 mr-4">
-                        <img src="{% if conv.other_user.profile.avatar %}{{ conv.other_user.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ conv.other_user.username|urlencode }}&background=3C0091&color=FFFFFF{% endif %}" alt="{{ conv.other_user.username }}" class="w-full h-full rounded-full">
+                        <img src="{% if conv.other_user.profile.avatar_url %}{{ conv.other_user.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ conv.other_user.username|urlencode }}&background=3C0091&color=FFFFFF{% endif %}" alt="{{ conv.other_user.username }}" class="w-full h-full rounded-full">
                     </div>
                     <div class="flex-grow">
                         <div class="flex justify-between items-baseline">

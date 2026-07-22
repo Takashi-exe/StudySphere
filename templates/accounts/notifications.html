@@ -30,7 +30,7 @@
                     </div>
                     <div class="flex-grow">
                         {% if notif.sender %}
-                        <img src="{% if notif.sender.profile.avatar %}{{ notif.sender.profile.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ notif.sender.username|urlencode }}&background=random{% endif %}" alt="{{ notif.sender.username }}" class="w-6 h-6 rounded-full inline-block mr-2">
+                        <img src="{% if notif.sender.profile.avatar_url %}{{ notif.sender.profile.avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ notif.sender.username|urlencode }}&background=random{% endif %}" alt="{{ notif.sender.username }}" class="w-6 h-6 rounded-full inline-block mr-2">
                         {% endif %}
                         <p class="text-sm text-white inline">{{ notif.message }}</p>
                         <p class="text-xs text-[#958EA0] mt-1">{{ notif.created_at|timesince }} ago</p>
