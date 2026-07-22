@@ -150,6 +150,30 @@ ASGI_APPLICATION = 'studysphere.asgi.application'
 REDIS_URL = os.environ.get('REDIS_URL')
 
 if REDIS_URL:
+    # --- TLS handling for Upstash (and any rediss:// provider) --------------
+    #
+    # Upstash requires TLS: its connection string uses the `rediss://` scheme.
+    # channels_redis feeds each host entry to
+    # `redis.asyncio.ConnectionPool.from_url(address, **rest)`, and django_redis
+    # feeds CONNECTION_POOL_KWARGS to `redis.connection.ConnectionPool.from_url`.
+    # In BOTH cases `from_url` inspects the URL scheme: `rediss://` selects the
+    # SSLConnection class, `redis://` the plain one. The plain Connection rejects
+    # any `ssl_*` kwarg with a TypeError, so SSL options are ONLY safe to pass
+    # when the scheme is actually rediss:// — hence we gate them behind this flag
+    # instead of setting them unconditionally.
+    #
+    # Cert verification: Upstash serves a normal CA-signed cert whose CN/SAN
+    # matches the host, so redis-py's strict defaults (ssl_cert_reqs="required",
+    # ssl_check_hostname=True) work as-is — we don't weaken them. The value is
+    # read from REDIS_SSL_CERT_REQS purely as an escape hatch ("required" /
+    # "optional" / "none") in case a future provider uses a self-signed cert;
+    # leave it unset for Upstash.
+    REDIS_IS_TLS = REDIS_URL.split("://", 1)[0].lower() == "rediss"
+    _redis_ssl_kwargs = {}
+    if REDIS_IS_TLS:
+        _redis_ssl_kwargs["ssl_cert_reqs"] = os.environ.get(
+            "REDIS_SSL_CERT_REQS", "required"
+        )
     # Resilience tuning for channels_redis 4.3.x / redis-py 8.x on Render.
     #
     # A managed Redis instance can briefly stall (failover, maintenance, network
@@ -183,6 +207,13 @@ if REDIS_URL:
                         "socket_timeout": 20,  # MUST stay > brpop_timeout (5s)
                         "socket_keepalive": True,
                         "health_check_interval": 30,
+                        # Retry a command once if the socket times out, instead of
+                        # letting the TimeoutError bubble up and kill the consumer.
+                        # Safe alongside socket_timeout=20 > brpop_timeout=5: the
+                        # blocking pop returns empty before the socket read fires.
+                        "retry_on_timeout": True,
+                        # ssl_cert_reqs (rediss:// only) — empty dict for redis://
+                        **_redis_ssl_kwargs,
                     }
                 ],
             },
@@ -206,6 +237,10 @@ if REDIS_URL:
                     "socket_keepalive": True,
                     "health_check_interval": 30,
                     "retry_on_timeout": True,
+                    # ssl_cert_reqs (rediss:// only) — reaches SSLConnection via
+                    # ConnectionPool.from_url. Empty dict for a redis:// URL, so
+                    # nothing SSL-related is passed to the plain Connection.
+                    **_redis_ssl_kwargs,
                 },
             },
         }
