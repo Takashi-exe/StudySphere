@@ -15,8 +15,15 @@ class Profile(models.Model):
 
     @property
     def avatar_url(self):
+        # Only return a URL when a file is set AND actually present in storage.
+        # The DB can reference filenames whose files no longer exist on disk
+        # (e.g. /media/* is gitignored, so uploads don't survive restarts/redeploys).
+        # Returning None in that case lets templates fall back to the placeholder
+        # instead of rendering a broken <img> that 404s.
         try:
-            return self.avatar.url if self.avatar else None
+            if self.avatar and self.avatar.storage.exists(self.avatar.name):
+                return self.avatar.url
+            return None
         except Exception:
             return None
 

@@ -7,8 +7,10 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="switched to local storage from AWS bucket">
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fixed profile picture not updating">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +74,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -153,15 +155,9 @@
       <workItem from="1784236951728" duration="6079000" />
       <workItem from="1784243246071" duration="575000" />
       <workItem from="1784243905155" duration="7067000" />
-      <workItem from="1784487705873" duration="5825000" />
-    </task>
-    <task id="LOCAL-00027" summary="Fix merged notifications/__init__.py">
-      <option name="closed" value="true" />
-      <created>1784214056019</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1784214056019</updated>
+      <workItem from="1784487705873" duration="6907000" />
+      <workItem from="1784734711476" duration="296000" />
+      <workItem from="1784735043512" duration="1845000" />
     </task>
     <task id="LOCAL-00028" summary="Fix merged notifications/__init__.py">
       <option name="closed" value="true" />
@@ -547,14 +543,21 @@
       <option name="project" value="LOCAL" />
       <updated>1784489295323</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="Fixed profile picture not updating">
+      <option name="closed" value="true" />
+      <created>1784504815555</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1784504815555</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Started working on group chats" />
     <MESSAGE value="UI Overhaul" />
     <MESSAGE value="Implemented auto generated summaries after session ends, Added the call system" />
     <MESSAGE value="Implemented flashcard game and call system" />
@@ -579,6 +582,7 @@
     <MESSAGE value="FIxed profile picture upload" />
     <MESSAGE value="Fixed server error in group_detail.html" />
     <MESSAGE value="switched to local storage from AWS bucket" />
-    <option name="LAST_COMMIT_MESSAGE" value="switched to local storage from AWS bucket" />
+    <MESSAGE value="Fixed profile picture not updating" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed profile picture not updating" />
   </component>
 </project>
