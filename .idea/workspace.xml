@@ -7,11 +7,7 @@
     <option name="selectedModelId" value="gpt-5-mini" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fixed private messaging">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/studysphere/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/studysphere/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="d0fbd148-d2d4-4dd1-8fb6-0a080959c07d" name="Changes" comment="Fixed private messaging" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -157,23 +153,7 @@
       <workItem from="1784243905155" duration="7067000" />
       <workItem from="1784487705873" duration="6907000" />
       <workItem from="1784734711476" duration="296000" />
-      <workItem from="1784735043512" duration="5214000" />
-    </task>
-    <task id="LOCAL-00030" summary="Regenerate requirements.txt from working local environment">
-      <option name="closed" value="true" />
-      <created>1784216748392</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1784216748392</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Regenerate requirements.txt from working local environment">
-      <option name="closed" value="true" />
-      <created>1784217455589</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1784217455589</updated>
+      <workItem from="1784735043512" duration="5662000" />
     </task>
     <task id="LOCAL-00032" summary="Fixed accounts urls">
       <option name="closed" value="true" />
@@ -551,7 +531,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784741549218</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="Fixed private messaging">
+      <option name="closed" value="true" />
+      <created>1784743388484</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1784743388484</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Fixed private messaging">
+      <option name="closed" value="true" />
+      <created>1784743482117</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1784743482121</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
